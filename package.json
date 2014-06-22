@@ -1,0 +1,24 @@
+{
+  "name": "yotta",
+  "version": "0.0.0",
+  "description": "A Jason database.",
+  "main": "yotta.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elgs/yotta-node"
+  },
+  "keywords": [
+    "yotta",
+    "jason",
+    "database"
+  ],
+  "author": "Elgs Chen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elgs/yotta-node/issues"
+  },
+  "homepage": "https://github.com/elgs/yotta-node"
+}
