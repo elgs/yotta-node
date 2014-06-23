@@ -5,16 +5,30 @@
 (function () {
     "use strict";
 
-    var opened = false;
-    var open = function () {
+    var Yotta = function (dbPath, config) {
+        config = config || {
+            read: true,
+            write: true
+        };
+        this.dbPath = dbPath;
+        this.read = config.read || true;
+        this.write = config.write || true;
+        this.closed = true;
     };
 
-    var close = function () {
+    Yotta.prototype.open = function () {
+        this.closed = false;
     };
 
-    var put = function (key, value) {
+    Yotta.prototype.close = function () {
+        this.closed = true;
     };
 
-    var get = function (key) {
+    Yotta.prototype.put = function (key, value) {
     };
+
+    Yotta.prototype.get = function (key) {
+    };
+
+    module.exports = Yotta;
 })();
