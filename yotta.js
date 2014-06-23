@@ -7,12 +7,16 @@
 
     var fs = require('fs');
     var path = require('path');
+    var util = require('util');
     var mkdirp = require('mkdirp');
 
     var Yotta = function (dbPath, config) {
         config = config || {
             read: true,
-            write: true
+            write: true,
+            syncInterval: 10,
+            syncBufferSize: 100,
+            maxDataBufferSize: 1000000
         };
         this.dbPath = path.resolve(dbPath);
         this.dataFile = dbPath + '/+data';
@@ -24,6 +28,9 @@
         this.dataBuffer = {};
         this.indexBuffer = {};
         this.syncClean = true;
+        this.syncInterval = config.syncInterval || 10;
+        this.syncBufferSize = config.syncBufferSize || 100;
+        this.maxDataBufferSize = config.maxDataBufferSize || 1000000;
         mkdirp.sync(this.dbPath);
     };
 
@@ -42,15 +49,14 @@
     };
 
     Yotta.prototype.close = function () {
-        this.syncClean = false;
         this._syncBuffer();
         fs.unlinkSync(this.lockFile);
-        this.closed = true;
     };
 
     Yotta.prototype.put = function (key, value) {
         this.dataBuffer[key] = value;
-        this.indexBuffer[key] = null;
+        var index = this._syncBuffer(key, value);
+        this.indexBuffer[key] = index;
     };
 
     Yotta.prototype.get = function (key) {
@@ -70,10 +76,21 @@
     };
 
     Yotta.prototype.vacuum = function () {
+        this.syncClean = false;
+        //TODO:
+        this.syncClean = true;
     };
 
-    Yotta.prototype._syncBuffer = function () {
+    Yotta.prototype._syncBuffer = function (key, value) {
+        this.syncClean = false;
+        var valueBuffer = new Buffer(value);
+        var size = fs.statSync(this.dataFile).size;
+        fs.appendFileSync(this.dataFile, valueBuffer);
         this.syncClean = true;
+        return {
+            start: size,
+            end: size + valueBuffer.length - 1
+        }
     };
 
     exports.Yotta = Yotta;
