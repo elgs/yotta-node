@@ -12,6 +12,7 @@
             var y0 = new Yotta('./testdb');
             expect(y0.closed).toBe(true);
             y0.open();
+            expect(y0.open).toThrowError();
             expect(y0.closed).toBe(false);
             y0.close();
             expect(y0.closed).toBe(true);
