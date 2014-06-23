@@ -9,7 +9,7 @@
 
     describe('Yotta Suite', function () {
         it('should return false before open', function () {
-            var y0 = new Yotta('./testdb');
+            var y0 = new Yotta('./a/testdb');
             expect(y0.closed).toBe(true);
             y0.open();
             expect(y0.open).toThrowError();
