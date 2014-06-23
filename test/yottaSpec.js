@@ -5,7 +5,7 @@
 (function () {
     "use strict";
 
-    var Yotta = require('../yotta.js');
+    var Yotta = require('../yotta.js').Yotta;
 
     describe('Yotta Suite', function () {
         it('should return false before open', function () {
