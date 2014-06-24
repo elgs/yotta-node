@@ -19,7 +19,7 @@
             maxDataBufferSize: 1000000
         };
         this.dbPath = path.resolve(dbPath);
-        this.dataFile = dbPath + '/+data';
+        this.dataFile = dbPath + '/data';
         this.indexFile = dbPath + '/index';
         this.lockFile = dbPath + '/.lock';
         this.read = config.read || true;
@@ -27,7 +27,6 @@
         this.closed = true;
         this.dataBuffer = {};
         this.indexBuffer = {};
-        this.syncClean = true;
         this.syncInterval = config.syncInterval || 10;
         this.syncBufferSize = config.syncBufferSize || 100;
         this.maxDataBufferSize = config.maxDataBufferSize || 1000000;
@@ -43,28 +42,30 @@
         }
         fs.openSync(this.lockFile, 'w');
         fs.openSync(this.indexFile, 'a');
+        fs.openSync(this.dataFile, 'a');
         var indexString = fs.readFileSync(this.indexFile, 'utf8');
         this.indexBuffer = JSON.parse(indexString || '{}');
         this.closed = false;
     };
 
     Yotta.prototype.close = function () {
-        this._syncBuffer();
         fs.unlinkSync(this.lockFile);
+        this.closed = true;
     };
 
     Yotta.prototype.put = function (key, value) {
         this.dataBuffer[key] = value;
-        var index = this._syncBuffer(key, value);
+        var index = this._syncData(key, value);
         this.indexBuffer[key] = index;
+        this._syncIndex();
     };
 
     Yotta.prototype.get = function (key) {
         var value = this.dataBuffer[key];
         if (!value) {
             var index = this.indexBuffer[key];
-            var dataStream = fs.createReadStream(this.dataFile, index);
-            value = dataStream.read().toSource();
+            var dataReadStream = fs.createReadStream(this.dataFile, index);
+            value = dataReadStream.read().toSource();
             this.dataBuffer[key] = value;
         }
         return value;
@@ -76,21 +77,21 @@
     };
 
     Yotta.prototype.vacuum = function () {
-        this.syncClean = false;
         //TODO:
-        this.syncClean = true;
     };
 
-    Yotta.prototype._syncBuffer = function (key, value) {
-        this.syncClean = false;
+    Yotta.prototype._syncData = function (key, value) {
         var valueBuffer = new Buffer(value);
         var size = fs.statSync(this.dataFile).size;
         fs.appendFileSync(this.dataFile, valueBuffer);
-        this.syncClean = true;
         return {
             start: size,
             end: size + valueBuffer.length - 1
         }
+    };
+
+    Yotta.prototype._syncIndex = function () {
+        fs.writeFileSync(this.indexFile, JSON.stringify(this.indexBuffer));
     };
 
     exports.Yotta = Yotta;
