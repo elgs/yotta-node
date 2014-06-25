@@ -17,6 +17,7 @@ Please forgive me for the poor documentation for the moment of time. Here is som
         beforeEach(function () {
             expect(y0.closed).toBe(true);
             y0.open();
+            expect(y0.closed).toBe(false);
         });
         afterEach(function () {
             y0.close();
@@ -46,6 +47,11 @@ Please forgive me for the poor documentation for the moment of time. Here is som
                 y0.put('k' + i, 'v' + i);
             }
             expect(y0.get('k100')).toBe('v100');
+        });
+
+        it('should remove k100', function () {
+            y0.remove('k100');
+            expect(y0.get('k100')).toBe(null);
         });
     });
 })();
