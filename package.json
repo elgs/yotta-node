@@ -1,6 +1,6 @@
 {
     "name": "yotta",
-    "version": "0.0.2",
+    "version": "0.0.4",
     "description": "A Jason database.",
     "main": "yotta.js",
     "scripts": {
@@ -14,6 +14,7 @@
         "yotta",
         "jason",
         "database"
+        "db"
     ],
     "author": "Elgs Chen",
     "license": "ISC",

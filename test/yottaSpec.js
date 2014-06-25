@@ -12,6 +12,7 @@
         beforeEach(function () {
             expect(y0.closed).toBe(true);
             y0.open();
+            expect(y0.closed).toBe(false);
         });
         afterEach(function () {
             y0.close();
