@@ -43,5 +43,10 @@
             }
             expect(y0.get('k100')).toBe('v100');
         });
+
+        it('should remove k100', function () {
+            y0.remove('k100');
+            expect(y0.get('k100')).toBe(null);
+        });
     });
 })();

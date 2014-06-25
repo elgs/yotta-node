@@ -75,11 +75,16 @@
 
     Yotta.prototype.get = function (key) {
         var value = this.dataBuffer[key];
-        if (!value) {
+        if (value === undefined) {
             var index = this.indexBuffer[key];
-            var dataReadStream = fs.createReadStream(this.dataFile, index);
-            value = dataReadStream.read().toSource();
-            this.dataBuffer[key] = value;
+            if (index && index.start >= 0 && index.end >= 0) {
+                var dataReadStream = fs.createReadStream(this.dataFile, index);
+                value = dataReadStream.read().toString();
+                this.dataBuffer[key] = value;
+            } else {
+                this.dataBuffer[key] = null;
+                value = null;
+            }
         }
         return value;
     };
@@ -87,6 +92,7 @@
     Yotta.prototype.remove = function (key) {
         delete this.dataBuffer[key];
         delete this.indexBuffer[key];
+        fs.appendFileSync(this.indexFile, key + ',-1,-1\n');
     };
 
     Yotta.prototype.vacuum = function () {
