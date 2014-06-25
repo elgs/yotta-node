@@ -25,8 +25,6 @@
         this.read = config.read || true;
         this.write = config.write || true;
         this.closed = true;
-        this.dataBuffer = {};
-        this.indexBuffer = {};
         this.syncInterval = config.syncInterval || 10;
         this.syncBufferSize = config.syncBufferSize || 100;
         this.maxDataBufferSize = config.maxDataBufferSize || 1000000;
@@ -40,16 +38,31 @@
         if (this.closed === false) {
             throw new Error('Database already opened.');
         }
+        this.dataBuffer = {};
+        this.indexBuffer = {};
         fs.openSync(this.lockFile, 'w');
         fs.openSync(this.indexFile, 'a');
         fs.openSync(this.dataFile, 'a');
         var indexString = fs.readFileSync(this.indexFile, 'utf8');
-        this.indexBuffer = JSON.parse(indexString || '{}');
+        indexString.split('\n').map(function (val) {
+            if (val && val.trim()) {
+                var tokens = val.split(',');
+                var key = tokens[0];
+                var start = tokens[1] >>> 0;
+                var end = tokens[2] >>> 0;
+                this.indexBuffer[key] = {
+                    start: start,
+                    end: end
+                };
+            }
+        }, this);
         this.closed = false;
     };
 
     Yotta.prototype.close = function () {
         fs.unlinkSync(this.lockFile);
+        this.dataBuffer = null;
+        this.indexBuffer = null;
         this.closed = true;
     };
 
@@ -57,7 +70,7 @@
         this.dataBuffer[key] = value;
         var index = this._syncData(key, value);
         this.indexBuffer[key] = index;
-        this._syncIndex();
+        this._syncIndex(key, index);
     };
 
     Yotta.prototype.get = function (key) {
@@ -90,8 +103,8 @@
         }
     };
 
-    Yotta.prototype._syncIndex = function () {
-        fs.writeFileSync(this.indexFile, JSON.stringify(this.indexBuffer));
+    Yotta.prototype._syncIndex = function (key, index) {
+        fs.appendFileSync(this.indexFile, key + ',' + index.start + ',' + index.end + '\n');
     };
 
     exports.Yotta = Yotta;
