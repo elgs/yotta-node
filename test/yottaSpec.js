@@ -6,7 +6,7 @@
     "use strict";
 
     var Yotta = require('../yotta.js').Yotta;
-    var y0 = new Yotta('./a/testdb');
+    var y0 = new Yotta('/Volumes/RAMDrive/testdb');
 
     describe('Yotta Suite', function () {
         beforeEach(function () {
@@ -38,7 +38,7 @@
         });
 
         it('should save 1k json objects correctly', function () {
-            for (var i = 0; i < (1 << 10); ++i) {
+            for (var i = 0; i < (1 << 20); ++i) {
                 y0.put('k' + i, 'v' + i);
             }
             expect(y0.get('k100')).toBe('v100');
