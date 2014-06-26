@@ -48,18 +48,24 @@
             if (val && val.trim()) {
                 var tokens = val.split(',');
                 var key = tokens[0];
-                var start = tokens[1] >>> 0;
-                var end = tokens[2] >>> 0;
-                this.indexBuffer[key] = {
-                    start: start,
-                    end: end
-                };
+                var start = tokens[1] >> 0;
+                var end = tokens[2] >> 0;
+                if (start >= 0 && end >= 0) {
+                    this.indexBuffer[key] = {
+                        start: start,
+                        end: end
+                    };
+                } else {
+                    delete this.dataBuffer[key];
+                    delete this.indexBuffer[key];
+                }
             }
         }, this);
         this.closed = false;
     };
 
     Yotta.prototype.close = function () {
+        this._rebuildIndex();
         fs.unlinkSync(this.lockFile);
         this.dataBuffer = null;
         this.indexBuffer = null;
@@ -111,6 +117,29 @@
 
     Yotta.prototype._syncIndex = function (key, index) {
         fs.appendFileSync(this.indexFile, key + ',' + index.start + ',' + index.end + '\n');
+    };
+
+    Yotta.prototype._rebuildIndex = function () {
+        var indexString = fs.readFileSync(this.indexFile, 'utf8');
+        var tmpIndexBuffer = {};
+        var tmpIndexBufferString = '';
+        indexString.split('\n').map(function (val) {
+            if (val && val.trim()) {
+                var tokens = val.split(',');
+                var key = tokens[0];
+                var start = tokens[1] >> 0;
+                var end = tokens[2] >> 0;
+                if (start >= 0 && end >= 0) {
+                    tmpIndexBuffer[key] = val + '\n';
+                } else {
+                    delete tmpIndexBuffer[key];
+                }
+            }
+        }, this);
+        for (var i in tmpIndexBuffer) {
+            tmpIndexBufferString += tmpIndexBuffer[i];
+        }
+        fs.writeFileSync(this.indexFile, tmpIndexBufferString);
     };
 
     exports.Yotta = Yotta;
