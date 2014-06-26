@@ -1,6 +1,6 @@
 {
     "name": "yotta",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "A Jason database.",
     "main": "yotta.js",
     "scripts": {
