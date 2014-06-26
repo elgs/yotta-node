@@ -1,58 +1,37 @@
-yotta-node
+yotta
 ==========
+Yotta is a local file based key value database, written in Node.js.
 
-A jason database.
----
-Yotta db is still under intensive development currently. Please visit the Github repository for details.
+#Installation
 
-Please forgive me for the poor documentation for the moment of time. Here is some test code:
-```javascript
-(function () {
-    "use strict";
+`npm install yotta`
 
-    var Yotta = require('../yotta.js').Yotta;
-    var y0 = new Yotta('./a/testdb');
+#Usage
 
-    describe('Yotta Suite', function () {
-        beforeEach(function () {
-            expect(y0.closed).toBe(true);
-            y0.open();
-            expect(y0.closed).toBe(false);
-        });
-        afterEach(function () {
-            y0.close();
-            expect(y0.closed).toBe(true);
-        });
-
-        it('should throw error if reopen', function () {
-            expect(y0.open).toThrowError();
-        });
-
-        it('should set closed to be false', function () {
-            expect(y0.closed).toBe(false);
-        });
-
-        it('should save key1/value1 in the store', function () {
-            y0.put('key1', 'value1');
-            expect(y0.get('key1')).toBe('value1');
-        });
-
-        it('should save and retrieve json object correctly', function () {
-            y0.put('key2', '{"host": "localhost", "port": 80}');
-            expect(JSON.parse(y0.get('key2')).port).toBe(80);
-        });
-
-        it('should save 1k json objects correctly', function () {
-            for (var i = 0; i < (1 << 10); ++i) {
-                y0.put('k' + i, 'v' + i);
-            }
-            expect(y0.get('k100')).toBe('v100');
-        });
-
-        it('should remove k100', function () {
-            y0.remove('k100');
-            expect(y0.get('k100')).toBe(null);
-        });
-    });
-})();
 ```
+var Yotta = require('yotta').Yotta;
+
+// specify data file location
+var yottadb = new Yotta('./testdb');
+
+yottadb.open();
+
+yottadb.put("some_key", "some_value");
+var v = yottadb.get("some_key");
+console.log(v);
+
+yottadb.close();
+```
+
+#About
+The motivation of creating the Yotta DB is that I was looking for something like Redis without installation as a heavy
+dependency. High performance is a concern in the design of Yotta DB. Most operations happen in a memory cache layer,
+and the cache is synchronized to the disk every second or when the cache is too large.
+
+#Roadmap
+There are several things on my mind to do for Yotta DB:
+1, A command line shell interface to manipulate the databases;
+2, A set of asynchronous operation interfaces;
+3, Implementation in other language like Golang, Java and C;
+
+Patches and ideas welcome.
