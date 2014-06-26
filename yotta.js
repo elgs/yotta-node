@@ -59,7 +59,7 @@
         }, this);
         var self = this;
         this.syncId = setInterval(function () {
-            console.log('sync...');
+            //console.log('sync...');
             self._syncFull();
         }, this.syncInterval * 1000);
         this.closed = false;
@@ -76,40 +76,76 @@
         this.closed = true;
     };
 
-    Yotta.prototype.put = function (key, value) {
-        this.dataBuffer[key] = value;
-        this.keySyncBuffer.push(key);
-        if (this.keySyncBuffer.length >= this.syncBufferSize) {
-            this._syncFull();
-            this.keySyncBuffer = [];
-        }
+    Yotta.prototype.put = function (key, value, cb) {
+        var self = this;
+        var _put = function () {
+            self.dataBuffer[key] = value;
+            self.keySyncBuffer.push(key);
+            if (self.keySyncBuffer.length >= self.syncBufferSize) {
+                self._syncFull();
+                self.keySyncBuffer = [];
+            }
+        };
 
+        if (typeof cb === 'function') {
+            // async
+            setImmediate(function () {
+                _put();
+                cb(null);
+            });
+        } else {
+            // sync
+            _put();
+        }
         // precise mode
 //        var index = this._syncData(key, value);
 //        this.indexBuffer[key] = index;
 //        this._syncIndex(key, index);
     };
 
-    Yotta.prototype.get = function (key) {
-        var value = this.dataBuffer[key];
-        if (value === undefined) {
-            var index = this.indexBuffer[key];
-            if (index && index.start >= 0 && index.end >= 0) {
-                var dataReadStream = fs.createReadStream(this.dataFile, index);
-                value = dataReadStream.read().toString();
-                this.dataBuffer[key] = value;
-            } else {
-                this.dataBuffer[key] = null;
-                value = null;
+    Yotta.prototype.get = function (key, cb) {
+        var self = this;
+        var _get = function () {
+            var value = self.dataBuffer[key];
+            if (value === undefined) {
+                var index = self.indexBuffer[key];
+                if (index && index.start >= 0 && index.end >= 0) {
+                    var dataReadStream = fs.createReadStream(self.dataFile, index);
+                    value = dataReadStream.read().toString();
+                    self.dataBuffer[key] = value;
+                } else {
+                    self.dataBuffer[key] = null;
+                    value = null;
+                }
             }
+            return value;
+        };
+
+        if (typeof cb === 'function') {
+            // async
+            var ret = _get();
+            cb(null, ret);
+        } else {
+            // sync
+            return _get();
         }
-        return value;
     };
 
-    Yotta.prototype.remove = function (key) {
-        delete this.dataBuffer[key];
-        delete this.indexBuffer[key];
-        fs.appendFileSync(this.indexFile, key + ',-1,-1\n');
+    Yotta.prototype.remove = function (key, cb) {
+        var self = this;
+        var _remove = function () {
+            delete self.dataBuffer[key];
+            delete self.indexBuffer[key];
+            fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
+        };
+        if (typeof cb === 'function') {
+            // async
+            var ret = _remove();
+            cb(null);
+        } else {
+            // sync
+            _remove();
+        }
     };
 
     Yotta.prototype.vacuum = function () {
@@ -122,7 +158,7 @@
         }
         var size = fs.statSync(this.dataFile).size;
         var self = this;
-        var newData = this.keySyncBuffer.reduce(function (previousValue, currentValue, i, array) {
+        var newData = this.keySyncBuffer.reduce(function (previousValue, currentValue) {
             var valueBuffer = new Buffer(self.dataBuffer[currentValue]);
             self.indexBuffer[currentValue] = {
                 start: size,
@@ -133,7 +169,7 @@
         }, '');
         fs.appendFileSync(this.dataFile, newData);
 
-        var newIndex = this.keySyncBuffer.reduce(function (previousValue, currentValue, i, array) {
+        var newIndex = this.keySyncBuffer.reduce(function (previousValue, currentValue) {
             var index = self.indexBuffer[currentValue];
             return previousValue + currentValue + ',' + index.start + ',' + index.end + '\n';
         }, '');
