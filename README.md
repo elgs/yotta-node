@@ -9,7 +9,7 @@ Yotta is a local file based key value database, written in Node.js.
 #Usage
 
 ##Synchronously
-```
+```javascript
 var Yotta = require('yotta').Yotta;
 
 // specify data file location
@@ -39,7 +39,7 @@ yottadb.close();
 ```
 
 ##Asynchronously
-```
+```javascript
 var Yotta = require('yotta').Yotta;
 
 // specify data file location
