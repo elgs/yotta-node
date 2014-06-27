@@ -78,7 +78,6 @@
 
     Yotta.prototype.put = function (key, value, cb) {
         var self = this;
-        console.log(self.dataBuffer);
         var _put = function () {
             self.dataBuffer[key] = value;
             self.keySyncBuffer.push(key);

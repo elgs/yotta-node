@@ -50,7 +50,6 @@ layer, and the cache is synchronized to the disk every second or when the cache 
 There are several things on my mind to do for Yotta DB:
 
 1. A command line shell interface to manipulate the databases;
-2. A set of asynchronous operation interfaces;
-3. Implementation in other languages like Golang, Java and C;
+2. Implementation in other languages like Golang, Java and C;
 
 Patches and ideas welcome.
