@@ -156,7 +156,47 @@
         }
     };
 
-    Yotta.prototype.vacuum = function () {
+    //test(key, index, array of keys)
+    Yotta.prototype.findKeys = function (test, cb) {
+        var self = this;
+        if (typeof cb === 'function') {
+            // async
+            setImmediate(function () {
+                var ret = Object.keys(self.indexBuffer).filter(test);
+                cb(null, ret);
+            });
+        } else {
+            // sync
+            return Object.keys(self.indexBuffer).filter(test);
+        }
+    };
+
+    //test(key, index, array of keys)
+    Yotta.prototype.find = function (test, cb) {
+        var self = this;
+        if (typeof cb === 'function') {
+            // async
+            setImmediate(function () {
+                self.findKeys(test, function (err, keys) {
+                    var ret = {};
+                    keys.forEach(function (key) {
+                        ret[key] = self.get(key);
+                    });
+                    cb(null, ret);
+                });
+            });
+        } else {
+            // sync
+            var keys = self.findKeys(test);
+            var ret = {};
+            keys.forEach(function (key) {
+                ret[key] = self.get(key);
+            });
+            return ret;
+        }
+    };
+
+    Yotta.prototype.vacuum = function (cb) {
         //TODO:
     };
 

@@ -80,6 +80,49 @@
             }
         });
 
+        it('should find keys k100 and k102', function () {
+            var keysFound = y0.findKeys(function (key, index, keys) {
+                return key === 'k100' || key === 'k102';
+            });
+            expect(keysFound.length).toBe(2);
+            expect(keysFound.some(function (v) {
+                return v === 'k100' || v === 'k102';
+            })).toBe(true);
+        });
+
+        it('should find keys ka100 and ka102 asynchronously', function (done) {
+            y0.findKeys(function (key, index, keys) {
+                return key === 'ka100' || key === 'ka102';
+            }, function (err, keysFound) {
+                expect(keysFound.length).toBe(2);
+                expect(keysFound.some(function (v) {
+                    return v === 'ka100' || v === 'ka102';
+                })).toBe(true);
+                done();
+            });
+        });
+
+        it('should find k100 and k102', function () {
+            var found = y0.find(function (key, index, keys) {
+                return key === 'k100' || key === 'k102';
+            });
+            expect(Object.keys(found).length).toBe(2);
+            expect(found['k100']).toBe('v100');
+            expect(found['k102']).toBe('v102');
+        });
+
+        it('should find ka100 and ka102 asynchronously', function (done) {
+            y0.find(function (key, index, keys) {
+                return key === 'k100' || key === 'k102';
+            }, function (err, found) {
+                expect(Object.keys(found).length).toBe(2);
+                expect(found['k100']).toBe('v100');
+                expect(found['k102']).toBe('v102');
+                done();
+            });
+        });
+
+
         it('should remove k100', function () {
             y0.remove('k100');
             expect(y0.get('k100')).toBe(null);
