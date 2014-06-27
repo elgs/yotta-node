@@ -76,75 +76,76 @@
         this.closed = true;
     };
 
+    var _put = function (key, value, self) {
+        self.dataBuffer[key] = value;
+        self.keySyncBuffer.push(key);
+        if (self.keySyncBuffer.length >= self.syncBufferSize) {
+            self._syncFull();
+            self.keySyncBuffer = [];
+        }
+    };
+
     Yotta.prototype.put = function (key, value, cb) {
         var self = this;
-        var _put = function () {
-            self.dataBuffer[key] = value;
-            self.keySyncBuffer.push(key);
-            if (self.keySyncBuffer.length >= self.syncBufferSize) {
-                self._syncFull();
-                self.keySyncBuffer = [];
-            }
-        };
-
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                _put();
+                _put(key, value, self);
                 cb(null);
             });
         } else {
             // sync
-            _put();
+            _put(key, value, self);
         }
-        // precise mode
+//        precise mode
 //        var index = this._syncData(key, value);
 //        this.indexBuffer[key] = index;
 //        this._syncIndex(key, index);
     };
 
+    var _get = function (key, self) {
+        var value = self.dataBuffer[key];
+        if (value === undefined) {
+            var index = self.indexBuffer[key];
+            if (index && index.start >= 0 && index.end >= 0) {
+                var dataReadStream = fs.createReadStream(self.dataFile, index);
+                value = dataReadStream.read().toString();
+                self.dataBuffer[key] = value;
+            } else {
+                self.dataBuffer[key] = null;
+                value = null;
+            }
+        }
+        return value;
+    };
+
     Yotta.prototype.get = function (key, cb) {
         var self = this;
-        var _get = function () {
-            var value = self.dataBuffer[key];
-            if (value === undefined) {
-                var index = self.indexBuffer[key];
-                if (index && index.start >= 0 && index.end >= 0) {
-                    var dataReadStream = fs.createReadStream(self.dataFile, index);
-                    value = dataReadStream.read().toString();
-                    self.dataBuffer[key] = value;
-                } else {
-                    self.dataBuffer[key] = null;
-                    value = null;
-                }
-            }
-            return value;
-        };
-
         if (typeof cb === 'function') {
             // async
-            var ret = _get();
+            var ret = _get(key, self);
             cb(null, ret);
         } else {
             // sync
-            return _get();
+            return _get(key, self);
         }
+    };
+
+    var _remove = function (key, self) {
+        delete self.dataBuffer[key];
+        delete self.indexBuffer[key];
+        fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
     };
 
     Yotta.prototype.remove = function (key, cb) {
         var self = this;
-        var _remove = function () {
-            delete self.dataBuffer[key];
-            delete self.indexBuffer[key];
-            fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
-        };
         if (typeof cb === 'function') {
             // async
-            var ret = _remove();
+            var ret = _remove(key, self);
             cb(null);
         } else {
             // sync
-            _remove();
+            _remove(key, self);
         }
     };
 
