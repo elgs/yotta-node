@@ -37,9 +37,9 @@
         this.indexBuffer = {};
         this.keySyncBuffer = [];
         fs.openSync(this.lockFile, 'w');
-        fs.openSync(this.indexFile, 'a');
-        fs.openSync(this.dataFile, 'a');
+        var fd = fs.openSync(this.indexFile, 'a');
         var indexString = fs.readFileSync(this.indexFile, 'utf8');
+        fs.close(fd);
         indexString.split('\n').map(function (val) {
             if (val && val.trim()) {
                 var tokens = val.split(',');
@@ -110,8 +110,12 @@
         if (value === undefined) {
             var index = self.indexBuffer[key];
             if (index && index.start >= 0 && index.end >= 0) {
-                var dataReadStream = fs.createReadStream(self.dataFile, index);
-                value = dataReadStream.read().toString();
+                var length = index.end - index.start;
+                var buffer = new Buffer(length);
+                var fd = fs.openSync(this.dataFile, 'r');
+                fs.readSync(fd, buffer, 0, length, index.start);
+                fs.closeSync(fd);
+                value = buffer.toString();
                 self.dataBuffer[key] = value;
             } else {
                 self.dataBuffer[key] = null;
@@ -204,16 +208,17 @@
         if (!this.keySyncBuffer || this.keySyncBuffer.length === 0) {
             return;
         }
+        var fd = fs.openSync(this.dataFile, 'a');
         var size = fs.statSync(this.dataFile).size;
         var self = this;
         var newData = this.keySyncBuffer.reduce(function (previousValue, currentValue) {
             var valueBuffer = new Buffer(self.dataBuffer[currentValue]);
             self.indexBuffer[currentValue] = {
                 start: size,
-                end: size + valueBuffer.length - 1
+                end: size + valueBuffer.length
             };
             size += valueBuffer.length;
-            return previousValue + currentValue;
+            return previousValue + valueBuffer;
         }, '');
         fs.appendFileSync(this.dataFile, newData);
 
@@ -222,6 +227,7 @@
             return previousValue + currentValue + ',' + index.start + ',' + index.end + '\n';
         }, '');
         fs.appendFileSync(this.indexFile, newIndex);
+        fs.close(fd);
     };
 
     Yotta.prototype._syncData = function (key, value) {

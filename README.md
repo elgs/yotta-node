@@ -17,9 +17,23 @@ var yottadb = new Yotta('./testdb');
 
 yottadb.open();
 
-yottadb.put("some_key", "some_value");
-var v = yottadb.get("some_key");
-console.log(v);
+yottadb.put("key0", "value0");
+yottadb.put("key1", "value1");
+yottadb.put("key2", "value2");
+var v = yottadb.get("key0");
+console.log(v); //value0
+
+//find keys
+var keysFound = yottadb.findKeys(function(key, index, keys) {
+	return key === 'key0' || key === 'key2';
+});
+console.log(keysFound); //[ 'key0', 'key2' ]
+
+//find
+var found = yottadb.find(function(key, index, keys) {
+	return key === 'key0' || key === 'key2';
+});
+console.log(found); //{ key0: 'value0', key2: 'value2' }
 
 yottadb.close();
 ```
@@ -33,12 +47,29 @@ var yottadb = new Yotta('./testdb');
 
 yottadb.open();
 
-yottadb.put("some_other_key", "some_other_value", function() {
-	yottadb.get("some_other_key", function(err, v) {
-		console.log(v);
-		yottadb.close();
+yottadb.put("key0a", "value0a", function() {
+	yottadb.get("key0a", function(err, v) {
+		console.log(v); // value0a
 	});
 });
+
+//find keys
+var keysFound = yottadb.findKeys(function(key, index, keys) {
+	return key === 'key0' || key === 'key2';
+}, function(err, keysFound) {
+	console.log(keysFound); //[ 'key0', 'key2' ]
+});
+
+//find
+var found = yottadb.find(function(key, index, keys) {
+	return key === 'key0' || key === 'key2';
+}, function(err, found) {
+	console.log(found); //{ key0: 'value0', key2: 'value2' }
+});
+
+setTimeout(function(){
+	yottadb.close();
+}, 1000);
 ```
 
 #About

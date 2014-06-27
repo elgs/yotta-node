@@ -102,21 +102,21 @@
             });
         });
 
-        it('should find k100 and k102', function () {
+        it('should find k101 and k102', function () {
             var found = y0.find(function (key, index, keys) {
-                return key === 'k100' || key === 'k102';
+                return key === 'k101' || key === 'k102';
             });
             expect(Object.keys(found).length).toBe(2);
-            expect(found['k100']).toBe('v100');
+            expect(found['k101']).toBe('v101');
             expect(found['k102']).toBe('v102');
         });
 
-        it('should find ka100 and ka102 asynchronously', function (done) {
+        it('should find ka101 and ka102 asynchronously', function (done) {
             y0.find(function (key, index, keys) {
-                return key === 'k100' || key === 'k102';
+                return key === 'k101' || key === 'k102';
             }, function (err, found) {
                 expect(Object.keys(found).length).toBe(2);
-                expect(found['k100']).toBe('v100');
+                expect(found['k101']).toBe('v101');
                 expect(found['k102']).toBe('v102');
                 done();
             });
