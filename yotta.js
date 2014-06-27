@@ -76,7 +76,8 @@
         this.closed = true;
     };
 
-    var _put = function (key, value, self) {
+    Yotta.prototype._put = function (key, value) {
+        var self = this;
         self.dataBuffer[key] = value;
         self.keySyncBuffer.push(key);
         if (self.keySyncBuffer.length >= self.syncBufferSize) {
@@ -90,12 +91,12 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                _put(key, value, self);
+                self._put(key, value);
                 cb(null);
             });
         } else {
             // sync
-            _put(key, value, self);
+            self._put(key, value);
         }
 //        precise mode
 //        var index = this._syncData(key, value);
@@ -103,7 +104,8 @@
 //        this._syncIndex(key, index);
     };
 
-    var _get = function (key, self) {
+    Yotta.prototype._get = function (key) {
+        var self = this;
         var value = self.dataBuffer[key];
         if (value === undefined) {
             var index = self.indexBuffer[key];
@@ -123,15 +125,18 @@
         var self = this;
         if (typeof cb === 'function') {
             // async
-            var ret = _get(key, self);
-            cb(null, ret);
+            setImmediate(function () {
+                var ret = self._get(key);
+                cb(null, ret);
+            });
         } else {
             // sync
-            return _get(key, self);
+            return self._get(key);
         }
     };
 
-    var _remove = function (key, self) {
+    Yotta.prototype._remove = function (key) {
+        var self = this;
         delete self.dataBuffer[key];
         delete self.indexBuffer[key];
         fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
@@ -141,11 +146,13 @@
         var self = this;
         if (typeof cb === 'function') {
             // async
-            var ret = _remove(key, self);
-            cb(null);
+            setImmediate(function () {
+                self._remove(key);
+                cb(null);
+            });
         } else {
             // sync
-            _remove(key, self);
+            self._remove(key);
         }
     };
 
