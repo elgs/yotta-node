@@ -33,13 +33,12 @@ var yottadb = new Yotta('./testdb');
 
 yottadb.open();
 
-yottadb.put("some_other_key", "some_other_value", function(){
-    yottadb.get("some_other_key", function(err, v){
-        console.log(v);
-    });
+yottadb.put("some_other_key", "some_other_value", function() {
+	yottadb.get("some_other_key", function(err, v) {
+		console.log(v);
+		yottadb.close();
+	});
 });
-
-yottadb.close();
 ```
 
 #About
