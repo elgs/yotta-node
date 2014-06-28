@@ -201,17 +201,32 @@
         }
     };
 
-    Yotta.prototype.vacuum = function (cb) {
-        var tmpVacuumDb = new Yotta(this.dbPath + '/.tmpVacuumDb');
+    Yotta.prototype._vacuum = function () {
+        var self = this;
+        var tmpVacuumDb = new Yotta(self.dbPath + '/.tmpVacuumDb');
         tmpVacuumDb.open();
-        for (var key in this.indexBuffer) {
-            var value = this.get(key);
+        for (var key in self.indexBuffer) {
+            var value = self.get(key);
             tmpVacuumDb.put(key, value);
         }
-        fs.createReadStream(this.dbPath + '/.tmpVacuumDb/data').pipe(fs.createWriteStream(this.dbPath + '/data'));
-        fs.createReadStream(this.dbPath + '/.tmpVacuumDb/index').pipe(fs.createWriteStream(this.dbPath + '/index'));
+        fs.createReadStream(self.dbPath + '/.tmpVacuumDb/data').pipe(fs.createWriteStream(self.dbPath + '/data'));
+        fs.createReadStream(self.dbPath + '/.tmpVacuumDb/index').pipe(fs.createWriteStream(self.dbPath + '/index'));
         tmpVacuumDb.close();
-        rimraf.sync(this.dbPath + '/.tmpVacuumDb');
+        rimraf.sync(self.dbPath + '/.tmpVacuumDb');
+    };
+
+    Yotta.prototype.vacuum = function (cb) {
+        var self = this;
+        if (typeof cb === 'function') {
+            // async
+            setImmediate(function () {
+                self._vacuum();
+                cb(null);
+            });
+        } else {
+            // sync
+            self._vacuum();
+        }
     };
 
     Yotta.prototype._syncFull = function () {

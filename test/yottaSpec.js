@@ -129,7 +129,7 @@
         });
 
         it('should remove ka100 asynchronously', function (done) {
-            y0.remove('ka100', function () {
+            y0.remove('ka100', function (err) {
                 y0.get('ka100', function (err, value) {
                     expect(value).toBe(null);
                     done();

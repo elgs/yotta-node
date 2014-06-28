@@ -35,6 +35,9 @@ var found = yottadb.find(function(key, index, keys) {
 });
 console.log(found); //{ key0: 'value0', key2: 'value2' }
 
+// remove
+yottadb.remove('key0');
+
 yottadb.close();
 ```
 
@@ -67,9 +70,26 @@ var found = yottadb.find(function(key, index, keys) {
 	console.log(found); //{ key0: 'value0', key2: 'value2' }
 });
 
+yottadb.remove('key0a', function (err) {
+    console.log('removed.');
+});
+
 setTimeout(function(){
 	yottadb.close();
 }, 1000);
+```
+
+#More APIs
+##vacuum
+Each remove operation causes fragments in the data file, `vacuum` will help to compact the data file.
+```javascript
+// synchronously
+yottadb.vacuum();
+
+// or asynchronously
+yottadb.vacuum(function(){
+	console.log('vacuum done');
+});
 ```
 
 #About
