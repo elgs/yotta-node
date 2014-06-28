@@ -8,6 +8,7 @@
     var fs = require('fs');
     var path = require('path');
     var mkdirp = require('mkdirp');
+    var rimraf = require('rimraf');
 
     var Yotta = function (dbPath, config) {
         config = config || {
@@ -201,7 +202,16 @@
     };
 
     Yotta.prototype.vacuum = function (cb) {
-        //TODO:
+        var tmpVacuumDb = new Yotta(this.dbPath + '/.tmpVacuumDb');
+        tmpVacuumDb.open();
+        for (var key in this.indexBuffer) {
+            var value = this.get(key);
+            tmpVacuumDb.put(key, value);
+        }
+        fs.createReadStream(this.dbPath + '/.tmpVacuumDb/data').pipe(fs.createWriteStream(this.dbPath + '/data'));
+        fs.createReadStream(this.dbPath + '/.tmpVacuumDb/index').pipe(fs.createWriteStream(this.dbPath + '/index'));
+        tmpVacuumDb.close();
+        rimraf.sync(this.dbPath + '/.tmpVacuumDb');
     };
 
     Yotta.prototype._syncFull = function () {
