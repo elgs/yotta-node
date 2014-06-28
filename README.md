@@ -71,9 +71,9 @@ var found = yottadb.find(function(key, index, keys) {
 });
 
 // remove
-yottadb.remove('key0a', function (err) {
-    console.log('removed.');
-});
+//yottadb.remove('key0a', function (err) {
+//    console.log('removed.');
+//});
 
 setTimeout(function(){
 	yottadb.close();

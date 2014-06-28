@@ -41,6 +41,8 @@
         var fd = fs.openSync(this.indexFile, 'a');
         var indexString = fs.readFileSync(this.indexFile, 'utf8');
         fs.close(fd);
+        fd = fs.openSync(this.dataFile, 'a');
+        fs.close(fd);
         indexString.split('\n').map(function (val) {
             if (val && val.trim()) {
                 var tokens = val.split(',');
@@ -83,7 +85,6 @@
         self.keySyncBuffer.push(key);
         if (self.keySyncBuffer.length >= self.syncBufferSize) {
             self._syncFull();
-            self.keySyncBuffer = [];
         }
     };
 
@@ -144,6 +145,10 @@
         var self = this;
         delete self.dataBuffer[key];
         delete self.indexBuffer[key];
+        var i = self.keySyncBuffer.indexOf(key);
+        if (i > -1) {
+            self.keySyncBuffer.splice(i, 1);
+        }
         fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
     };
 
@@ -167,12 +172,15 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                var ret = Object.keys(self.indexBuffer).filter(test);
-                cb(null, ret);
+                var retIndex = Object.keys(self.indexBuffer).filter(test);
+                var retData = Object.keys(self.dataBuffer).filter(test);
+                cb(null, retIndex.concat(retData));
             });
         } else {
             // sync
-            return Object.keys(self.indexBuffer).filter(test);
+            var retIndex = Object.keys(self.indexBuffer).filter(test);
+            var retData = Object.keys(self.dataBuffer).filter(test);
+            return retIndex.concat(retData);
         }
     };
 
