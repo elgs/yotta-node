@@ -69,7 +69,7 @@
     Yotta.prototype.close = function () {
         clearInterval(this.syncId);
         this._syncFull();
-        this._rebuildIndex();
+        this._rebuildIndex(true);
         fs.unlinkSync(this.lockFile);
         this.dataBuffer = null;
         this.indexBuffer = null;
@@ -203,16 +203,18 @@
 
     Yotta.prototype._vacuum = function () {
         var self = this;
+        self._syncFull();
         var tmpVacuumDb = new Yotta(self.dbPath + '/.tmpVacuumDb');
         tmpVacuumDb.open();
         for (var key in self.indexBuffer) {
             var value = self.get(key);
             tmpVacuumDb.put(key, value);
         }
-        fs.createReadStream(self.dbPath + '/.tmpVacuumDb/data').pipe(fs.createWriteStream(self.dbPath + '/data'));
-        fs.createReadStream(self.dbPath + '/.tmpVacuumDb/index').pipe(fs.createWriteStream(self.dbPath + '/index'));
         tmpVacuumDb.close();
+        fs.writeFileSync(self.dbPath + '/data', fs.readFileSync(self.dbPath + '/.tmpVacuumDb/data'));
+        fs.writeFileSync(self.dbPath + '/index', fs.readFileSync(self.dbPath + '/.tmpVacuumDb/index'));
         rimraf.sync(self.dbPath + '/.tmpVacuumDb');
+        self._rebuildIndex(false);
     };
 
     Yotta.prototype.vacuum = function (cb) {
@@ -253,6 +255,7 @@
         }, '');
         fs.appendFileSync(this.indexFile, newIndex);
         fs.close(fd);
+        this.keySyncBuffer = [];
     };
 
     Yotta.prototype._syncData = function (key, value) {
@@ -269,9 +272,9 @@
         fs.appendFileSync(this.indexFile, key + ',' + index.start + ',' + index.end + '\n');
     };
 
-    Yotta.prototype._rebuildIndex = function () {
+    Yotta.prototype._rebuildIndex = function (writeBack) {
         var indexString = fs.readFileSync(this.indexFile, 'utf8');
-        var tmpIndexBuffer = {};
+        this.indexBuffer = {};
         var tmpIndexBufferString = '';
         indexString.split('\n').map(function (val) {
             if (val && val.trim()) {
@@ -280,16 +283,18 @@
                 var start = tokens[1] >> 0;
                 var end = tokens[2] >> 0;
                 if (start >= 0 && end >= 0) {
-                    tmpIndexBuffer[key] = val + '\n';
+                    this.indexBuffer[key] = val + '\n';
                 } else {
-                    delete tmpIndexBuffer[key];
+                    delete this.indexBuffer[key];
                 }
             }
         }, this);
-        for (var i in tmpIndexBuffer) {
-            tmpIndexBufferString += tmpIndexBuffer[i];
+        if (writeBack) {
+            for (var i in this.indexBuffer) {
+                tmpIndexBufferString += this.indexBuffer[i];
+            }
+            fs.writeFileSync(this.indexFile, tmpIndexBufferString);
         }
-        fs.writeFileSync(this.indexFile, tmpIndexBufferString);
     };
 
     exports.Yotta = Yotta;

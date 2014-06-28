@@ -136,5 +136,17 @@
                 });
             });
         });
+
+        it('should should continue to work after vacuum', function () {
+            y0.vacuum();
+            expect(y0.get('k105')).toBe('v105');
+        });
+
+        it('should should continue to work after vacuum asynchronously', function (done) {
+            y0.vacuum(function (err) {
+                expect(y0.get('k105')).toBe('v105');
+                done();
+            });
+        });
     });
 })();
