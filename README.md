@@ -70,6 +70,7 @@ var found = yottadb.find(function(key, index, keys) {
 	console.log(found); //{ key0: 'value0', key2: 'value2' }
 });
 
+// remove
 yottadb.remove('key0a', function (err) {
     console.log('removed.');
 });
