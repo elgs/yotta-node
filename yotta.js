@@ -49,11 +49,11 @@
                 var tokens = val.split(',');
                 var key = tokens[0];
                 var start = tokens[1] >> 0;
-                var end = tokens[2] >> 0;
-                if (start >= 0 && end >= 0) {
+                var length = tokens[2] >> 0;
+                if (start >= 0 && length >= 0) {
                     this.indexBuffer[key] = {
                         start: start,
-                        end: end
+                        length: length
                     };
                 } else {
                     delete this.dataBuffer[key];
@@ -112,8 +112,8 @@
         var value = self.dataBuffer[key];
         if (value === undefined) {
             var index = self.indexBuffer[key];
-            if (index && index.start >= 0 && index.end >= 0) {
-                var length = index.end - index.start;
+            if (index && index.start >= 0 && index.length >= 0) {
+                var length = index.length;
                 var buffer = new Buffer(length);
                 var fd = fs.openSync(this.dataFile, 'r');
                 fs.readSync(fd, buffer, 0, length, index.start);
@@ -250,7 +250,7 @@
             var valueBuffer = new Buffer(self.dataBuffer[currentValue]);
             self.indexBuffer[currentValue] = {
                 start: size,
-                end: size + valueBuffer.length
+                length: valueBuffer.length
             };
             size += valueBuffer.length;
             return previousValue + valueBuffer;
@@ -259,7 +259,7 @@
 
         var newIndex = this.keySyncBuffer.reduce(function (previousValue, currentValue) {
             var index = self.indexBuffer[currentValue];
-            return previousValue + currentValue + ',' + index.start + ',' + index.end + '\n';
+            return previousValue + currentValue + ',' + index.start + ',' + index.length + '\n';
         }, '');
         fs.appendFileSync(this.indexFile, newIndex);
         fs.close(fd);
@@ -272,12 +272,12 @@
         fs.appendFileSync(this.dataFile, valueBuffer);
         return {
             start: size,
-            end: size + valueBuffer.length - 1
+            length: valueBuffer.length
         };
     };
 
     Yotta.prototype._syncIndex = function (key, index) {
-        fs.appendFileSync(this.indexFile, key + ',' + index.start + ',' + index.end + '\n');
+        fs.appendFileSync(this.indexFile, key + ',' + index.start + ',' + index.length + '\n');
     };
 
     Yotta.prototype._rebuildIndex = function (writeBack) {
@@ -289,8 +289,8 @@
                 var tokens = val.split(',');
                 var key = tokens[0];
                 var start = tokens[1] >> 0;
-                var end = tokens[2] >> 0;
-                if (start >= 0 && end >= 0) {
+                var length = tokens[2] >> 0;
+                if (start >= 0 && length >= 0) {
                     this.indexBuffer[key] = val + '\n';
                 } else {
                     delete this.indexBuffer[key];
