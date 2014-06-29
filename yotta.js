@@ -47,9 +47,10 @@
         indexString.split('\n').map(function (val) {
             if (val && val.trim()) {
                 var tokens = val.split(',');
-                var key = tokens[0];
-                var start = tokens[1] >> 0;
-                var length = tokens[2] >> 0;
+                var tokenLength = tokens.length;
+                var key = tokens.slice(0, tokenLength - 2).join(',');
+                var start = tokens[tokenLength - 2] >> 0;
+                var length = tokens[tokenLength - 1] >> 0;
                 if (start >= 0 && length >= 0) {
                     this.indexBuffer[key] = {
                         start: start,
@@ -287,9 +288,10 @@
         indexString.split('\n').map(function (val) {
             if (val && val.trim()) {
                 var tokens = val.split(',');
-                var key = tokens[0];
-                var start = tokens[1] >> 0;
-                var length = tokens[2] >> 0;
+                var tokenLength = tokens.length;
+                var key = tokens.slice(0, tokenLength - 2).join(',');
+                var start = tokens[tokenLength - 2] >> 0;
+                var length = tokens[tokenLength - 1] >> 0;
                 if (start >= 0 && length >= 0) {
                     this.indexBuffer[key] = val + '\n';
                 } else {
