@@ -41,9 +41,9 @@
         fs.openSync(this.lockFile, 'w');
         var fd = fs.openSync(this.indexFile, 'a');
         var indexString = fs.readFileSync(this.indexFile, 'utf8');
-        fs.close(fd);
+        fs.closeSync(fd);
         fd = fs.openSync(this.dataFile, 'a');
-        fs.close(fd);
+        fs.closeSync(fd);
         indexString.split('\n').map(function (val) {
             if (val && val.trim()) {
                 var tokens = val.split(',');
@@ -263,7 +263,8 @@
             return previousValue + currentValue + ',' + index.start + ',' + index.length + '\n';
         }, '');
         fs.appendFileSync(this.indexFile, newIndex);
-        fs.close(fd);
+        fs.fsyncSync(fd);
+        fs.closeSync(fd);
         this.keySyncBuffer = [];
     };
 
