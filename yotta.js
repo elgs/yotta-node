@@ -9,6 +9,7 @@
     var path = require('path');
     var mkdirp = require('mkdirp');
     var rimraf = require('rimraf');
+    var _ = require('lodash');
 
     var Yotta = function (dbPath, config) {
         config = config || {
@@ -120,8 +121,7 @@
                 value = buffer.toString();
                 self.dataBuffer[key] = value;
             } else {
-                self.dataBuffer[key] = null;
-                value = null;
+                value = undefined;
             }
         }
         return value;
@@ -174,13 +174,13 @@
             setImmediate(function () {
                 var retIndex = Object.keys(self.indexBuffer).filter(test);
                 var retData = Object.keys(self.dataBuffer).filter(test);
-                cb(null, retIndex.concat(retData));
+                cb(null, _.unique(retIndex.concat(retData)));
             });
         } else {
             // sync
             var retIndex = Object.keys(self.indexBuffer).filter(test);
             var retData = Object.keys(self.dataBuffer).filter(test);
-            return retIndex.concat(retData);
+            return _.unique(retIndex.concat(retData));
         }
     };
 

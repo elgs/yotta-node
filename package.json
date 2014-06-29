@@ -1,6 +1,6 @@
 {
   "name": "yotta",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A Jason database.",
   "main": "yotta.js",
   "scripts": {
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/elgs/yotta-node",
   "dependencies": {
+    "lodash": "*",
     "mkdirp": "*",
     "rimraf": "*"
   }

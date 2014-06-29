@@ -6,7 +6,7 @@
     "use strict";
 
     var Yotta = require('../yotta.js').Yotta;
-    var y0 = new Yotta('/Volumes/RAMDrive/testdb');
+    var y0 = new Yotta('/Volumes/RAMDrive/testApiDb');
 
     describe('Yotta Suite', function () {
         beforeEach(function () {
@@ -125,13 +125,13 @@
 
         it('should remove k100', function () {
             y0.remove('k100');
-            expect(y0.get('k100')).toBe(null);
+            expect(y0.get('k100')).toBeUndefined();
         });
 
         it('should remove ka100 asynchronously', function (done) {
             y0.remove('ka100', function (err) {
                 y0.get('ka100', function (err, value) {
-                    expect(value).toBe(null);
+                    expect(value).toBeUndefined();
                     done();
                 });
             });
