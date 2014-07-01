@@ -16,16 +16,14 @@
         completer: function completer(line) {
             var completions = Object.keys(cliProcessors).sort();
             var hits = completions.filter(function (c) {
-                return c.indexOf(line) == 0
+                return c.indexOf(line) === 0;
             });
-            return [hits.length ? hits : completions, line]
+            return [hits.length ? hits : completions, line];
         }
     });
 
     var setPrompt = function (rl, prompt) {
-        if (prompt) {
-            rl.setPrompt(prompt + '>');
-        }
+        rl.setPrompt((prompt || '') + '> ');
         rl.prompt(true);
     };
 
@@ -44,7 +42,7 @@
             }
         }
         if (fn !== 'exit') {
-            setPrompt(rl);
+            setPrompt(rl, cliProcessors.context);
         }
     });
 
@@ -53,7 +51,7 @@
     };
 
     cliProcessors.version = function () {
-        //console.log([].slice.call(arguments));
+        //console.log(Array.prototype.slice.call(arguments));
         console.log(pjson.version);
     };
 })();
