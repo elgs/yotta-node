@@ -77,6 +77,20 @@
         }
     };
 
+    p.findKeys = function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (db) {
+            db.findKeys();
+        }
+    };
+
+    p.find = function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (db) {
+            db.find();
+        }
+    };
+
     p.vacuum = function () {
         if (db) {
             db.vacuum(function (err) {

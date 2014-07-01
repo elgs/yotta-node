@@ -7,6 +7,7 @@
 
     var readline = require('readline');
     var _ = require('lodash');
+    var splitargs = require('splitargs');
     var pjson = require('./package.json');
     var ycp = require('./yottacliprocessor.js');
 
@@ -32,7 +33,7 @@
     setPrompt(rl);
 
     rl.on('line', function (line) {
-        var args = line.split(/\s+/g);
+        var args = splitargs(line);
         var fn = args.shift();
         if (typeof cliProcessors[fn] === 'function') {
             cliProcessors[fn].apply(null, args);
