@@ -36,6 +36,8 @@
         db.open();
     };
 
+    p.use = p.open;
+
     p.close = function () {
         if (db) {
             db.close();
@@ -49,27 +51,37 @@
     p.put = function () {
         var args = Array.prototype.slice.call(arguments);
         if (db) {
-            db.put(args[0], args[1]);
+            db.put(args[0], args[1], function (err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
         }
     };
 
     p.get = function () {
         var args = Array.prototype.slice.call(arguments);
         if (db) {
-            console.log(db.get(args[0]));
+            db.get(args[0], function (err, value) {
+                console.log(err || value);
+            });
         }
     };
 
     p.remove = function () {
         var args = Array.prototype.slice.call(arguments);
         if (db) {
-            db.remove(args[0]);
+            db.remove(args[0], function (err) {
+                console.log(err);
+            });
         }
     };
 
     p.vacuum = function () {
         if (db) {
-            db.vacuum();
+            db.vacuum(function (err) {
+                console.log(err);
+            });
         }
     };
 })();

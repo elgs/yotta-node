@@ -6,7 +6,7 @@
     "use strict";
 
     var Yotta = require('../yotta.js').Yotta;
-    var y1 = new Yotta('/Volumes/RAMDrive/testUseDb');
+    var y1 = new Yotta('/Volumes/RAMDrive/test_yotta/testUseDb');
 
     describe('Yotta Suite', function () {
         beforeEach(function () {

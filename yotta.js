@@ -97,8 +97,12 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                self._put(key, value);
-                cb(null);
+                try {
+                    self._put(key, value);
+                    cb(null);
+                } catch (err) {
+                    cb(err);
+                }
             });
         } else {
             // sync
@@ -135,8 +139,12 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                var ret = self._get(key);
-                cb(null, ret);
+                try {
+                    var ret = self._get(key);
+                    cb(null, ret);
+                } catch (err) {
+                    cb(err);
+                }
             });
         } else {
             // sync
@@ -160,8 +168,12 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                self._remove(key);
-                cb(null);
+                try {
+                    self._remove(key);
+                    cb(null);
+                } catch (err) {
+                    cb(err);
+                }
             });
         } else {
             // sync
@@ -175,9 +187,13 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                var retIndex = Object.keys(self.indexBuffer).filter(test);
-                var retData = Object.keys(self.dataBuffer).filter(test);
-                cb(null, _.unique(retIndex.concat(retData)));
+                try {
+                    var retIndex = Object.keys(self.indexBuffer).filter(test);
+                    var retData = Object.keys(self.dataBuffer).filter(test);
+                    cb(null, _.unique(retIndex.concat(retData)));
+                } catch (err) {
+                    cb(err);
+                }
             });
         } else {
             // sync
@@ -194,6 +210,10 @@
             // async
             setImmediate(function () {
                 self.findKeys(test, function (err, keys) {
+                    if (err) {
+                        cb(err);
+                        return;
+                    }
                     var ret = {};
                     keys.forEach(function (key) {
                         ret[key] = self.get(key);
@@ -233,8 +253,12 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                self._vacuum();
-                cb(null);
+                try {
+                    self._vacuum();
+                    cb(null);
+                } catch (err) {
+                    cb(err);
+                }
             });
         } else {
             // sync
