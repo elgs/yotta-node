@@ -74,7 +74,9 @@
         clearInterval(this.syncId);
         this._syncFull();
         this._rebuildIndex(true);
-        fs.unlinkSync(this.lockFile);
+        fs.unlink(this.lockFile, function (err) {
+            // don't care.
+        });
         this.dataBuffer = null;
         this.indexBuffer = null;
         this.keySyncBuffer = null;

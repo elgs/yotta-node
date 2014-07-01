@@ -5,7 +5,8 @@
 (function () {
     "use strict";
 
-    var yotta = require('./yotta.js');
+    var Yotta = require('./yotta.js').Yotta;
+    var db;
 
     var p = {
         context: ''
@@ -18,10 +19,27 @@
 
     p.use = function () {
         var args = Array.prototype.slice.call(arguments);
-        p.context = args[0];
+        var dbName = args[0];
+        if (dbName === p.context) {
+            return;
+        }
+        if (!dbName) {
+            db.close();
+            p.context = dbName;
+            return;
+        }
+        if (db) {
+            db.close();
+        }
+        p.context = dbName;
+        db = new Yotta(p.context);
+        db.open();
     };
 
     p.close = function () {
+        if (p.context) {
+            db.close();
+        }
     };
 
     p.put = function () {
