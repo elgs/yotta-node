@@ -1,6 +1,6 @@
 yotta
 ==========
-Yotta is a local file based key value database, written in Node.js.
+Yotta DB is a local file based key value database, written in Node.js.
 
 #Installation
 

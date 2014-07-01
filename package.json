@@ -1,8 +1,8 @@
 {
   "name": "yotta",
-  "version": "0.0.18",
-  "description": "A Jason database.",
-  "main": "yotta.js",
+  "version": "0.1.0",
+  "description": "Yotta DB is a local file based key value database, written in Node.js.",
+  "main": "./bin/yotta",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
