@@ -17,7 +17,7 @@
         console.log(Array.prototype.slice.call(arguments));
     };
 
-    p.use = function () {
+    p.open = function () {
         var args = Array.prototype.slice.call(arguments);
         var dbName = args[0];
         if (dbName === p.context) {
@@ -29,7 +29,7 @@
             return;
         }
         if (db) {
-            db.close();
+            p.close();
         }
         p.context = dbName;
         db = new Yotta(p.context);
@@ -37,20 +37,39 @@
     };
 
     p.close = function () {
-        if (p.context) {
+        if (db) {
             db.close();
+            db = undefined;
+        }
+        if (p.context) {
+            p.context = undefined;
         }
     };
 
     p.put = function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (db) {
+            db.put(args[0], args[1]);
+        }
     };
 
     p.get = function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (db) {
+            console.log(db.get(args[0]));
+        }
     };
 
     p.remove = function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (db) {
+            db.remove(args[0]);
+        }
     };
 
     p.vacuum = function () {
+        if (db) {
+            db.vacuum();
+        }
     };
 })();
