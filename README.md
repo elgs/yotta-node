@@ -27,8 +27,7 @@ $ yotta
 mydb>
 ```
 
-###
-Exit Yotta DB shell
+### Exit Yotta DB shell
 ```
 mydb> exit
 > $
