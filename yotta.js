@@ -84,11 +84,18 @@
     };
 
     Yotta.prototype._put = function (key, value) {
+        if (!key || !value) {
+            return new Error('Invalid key or value:' + key + ', ' + value);
+        }
         var self = this;
         self.dataBuffer[key] = value;
         self.keySyncBuffer.push(key);
         if (self.keySyncBuffer.length >= self.syncBufferSize) {
-            self._syncFull();
+            try {
+                self._syncFull();
+            } catch (err) {
+                return err;
+            }
         }
     };
 
@@ -97,21 +104,12 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                try {
-                    self._put(key, value);
-                    cb(null);
-                } catch (err) {
-                    cb(err);
-                }
+                cb(self._put(key, value));
             });
         } else {
             // sync
-            self._put(key, value);
+            return self._put(key, value);
         }
-//        precise mode
-//        var index = this._syncData(key, value);
-//        this.indexBuffer[key] = index;
-//        this._syncIndex(key, index);
     };
 
     Yotta.prototype._get = function (key) {
@@ -292,20 +290,6 @@
         fs.fsyncSync(fd);
         fs.closeSync(fd);
         this.keySyncBuffer = [];
-    };
-
-    Yotta.prototype._syncData = function (key, value) {
-        var valueBuffer = new Buffer(value);
-        var size = fs.statSync(this.dataFile).size;
-        fs.appendFileSync(this.dataFile, valueBuffer);
-        return {
-            start: size,
-            length: valueBuffer.length
-        };
-    };
-
-    Yotta.prototype._syncIndex = function (key, index) {
-        fs.appendFileSync(this.indexFile, key + ',' + index.start + ',' + index.length + '\n');
     };
 
     Yotta.prototype._rebuildIndex = function (writeBack) {

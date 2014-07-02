@@ -25,19 +25,27 @@
         var config = args[args.length - 1];
         var dbName = args[0];
         if (dbName === p.context) {
+            config.setPrompt(p.context);
             return;
         }
-        if (!dbName) {
-            db.close();
+        try {
+            if (!dbName) {
+                db.close();
+                p.context = dbName;
+                config.setPrompt(p.context);
+                return;
+            }
+            if (db) {
+                p.close(config);
+            }
             p.context = dbName;
-            return;
+            db = new Yotta(p.context);
+            db.open();
+        } catch (err) {
+            p.context = '';
+            db = null;
+            console.log(err);
         }
-        if (db) {
-            p.close();
-        }
-        p.context = dbName;
-        db = new Yotta(p.context);
-        db.open();
         config.setPrompt(p.context);
     };
 

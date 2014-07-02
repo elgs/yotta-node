@@ -48,8 +48,6 @@
     _.extend(cliProcessors, ycp);
 
     cliProcessors.quit = cliProcessors.exit;
-    cliProcessors.bye = cliProcessors.exit;
-
 
     config.setPrompt(cliProcessors.context);
 
