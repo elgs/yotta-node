@@ -12,6 +12,70 @@ Yotta DB is a local file based key value database, written in Node.js.
 
 # Usage
 
+## Interactive CLI
+
+### Create a new DB
+
+```
+$ yotta mydb
+mydb>
+```
+or
+```
+$ yotta
+> open mydb
+mydb>
+```
+
+###
+Exit Yotta DB shell
+```
+mydb> exit
+> $
+```
+
+### Show all Yotta DB shell commands by hitting tab
+```
+$ yotta
+>
+close      exit       find       findkeys   get        open       put
+quit       remove     test       use        vacuum     version
+
+>
+```
+
+### Put a key
+```
+```
+
+### Get a value from a key
+```
+```
+
+### Remove a key
+```
+```
+
+### Find keys
+```
+```
+
+### Find key value pairs
+```
+```
+
+### Vacuum DB
+```
+```
+
+### Show version
+```
+```
+
+
+## CLI
+TODO:
+
 ## Module
 
 ### Synchronously
@@ -85,42 +149,6 @@ setTimeout(function(){
 	yottadb.close();
 }, 1000);
 ```
-
-## Interactive CLI
-
-### Create a new DB
-
-```
-$ yotta mydb
-mydb>
-```
-or
-```
-$ yotta
-> open mydb
-mydb>
-```
-
-###
-Exit Yotta DB shell
-```
-mydb> exit
-> $
-```
-
-### Show all Yotta DB shell commands by hitting tab
-```
-$ yotta
->
-close      exit       find       findkeys   get        open       put
-quit       remove     test       use        vacuum     version
-
-> 
-```
-
-
-## CLI
-TODO:
 
 # More APIs
 ##vacuum
