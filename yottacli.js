@@ -66,4 +66,8 @@
             config.setPrompt(ycp.context);
         }
     });
+
+    if (process.argv.length >= 3) {
+        rl.emit('line', 'open ' + process.argv[2]);
+    }
 })();

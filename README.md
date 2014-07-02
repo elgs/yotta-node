@@ -2,13 +2,19 @@ yotta
 ==========
 Yotta DB is a local file based key value database, written in Node.js.
 
-#Installation
+# Installation
 
+## Module
 `npm install yotta`
 
-#Usage
+## CLI
+`npm install yotta -g`
 
-##Synchronously
+# Usage
+
+## Module
+
+### Synchronously
 ```javascript
 var Yotta = require('yotta').Yotta;
 
@@ -41,7 +47,7 @@ yottadb.remove('key0');
 yottadb.close();
 ```
 
-##Asynchronously
+### Asynchronously
 ```javascript
 var Yotta = require('yotta').Yotta;
 
@@ -80,7 +86,43 @@ setTimeout(function(){
 }, 1000);
 ```
 
-#More APIs
+## Interactive CLI
+
+### Create a new DB
+
+```
+$ yotta mydb
+mydb>
+```
+or
+```
+$ yotta
+> open mydb
+mydb>
+```
+
+###
+Exit Yotta DB shell
+```
+mydb> exit
+> $
+```
+
+### Show all Yotta DB shell commands by hitting tab
+```
+$ yotta
+>
+close      exit       find       findkeys   get        open       put
+quit       remove     test       use        vacuum     version
+
+> 
+```
+
+
+## CLI
+TODO:
+
+# More APIs
 ##vacuum
 Each remove operation causes fragments in the data file, `vacuum` will help to compact the data file.
 ```javascript
@@ -93,12 +135,12 @@ yottadb.vacuum(function(){
 });
 ```
 
-#About
+# About
 The motivation of creating the Yotta DB is that I was looking for something similar to Redis without installation as a
 heavy dependency. High performance is a concern in the design of Yotta DB. Most operations happen in a memory cache
 layer, and the cache is synchronized to the disk every second or when the cache is too large.
 
-#Roadmap
+# Roadmap
 There are several things on my mind to do for Yotta DB:
 
 1. A command line shell interface to manipulate the databases;
