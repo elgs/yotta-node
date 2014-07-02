@@ -44,32 +44,61 @@ quit       remove     test       use        vacuum     version
 >
 ```
 
-### Put a key
+### Put some keys
 ```
+mydb> put a 1
+mydb> put b 2
+mydb> put c 3
+mydb> put d 4
+mydb> put e 5
 ```
 
 ### Get a value from a key
 ```
+mydb> get d
+4
 ```
 
 ### Remove a key
 ```
+mydb> remove c
+mydb> get c
+undefined
 ```
 
 ### Find keys
 ```
+mydb> findkeys "key==='a' || key==='d'"
+[ 'a', 'd' ]
+```
+
+### Find all keys
+```
+mydb> findkeys true
+[ 'a', 'b', 'd', 'e' ]
 ```
 
 ### Find key value pairs
 ```
+mydb> find "key==='a' || key==='d'"
+{ a: '1', d: '4' }
+```
+
+### Find all key value pairs
+```
+mydb> find true
+{ a: '1', b: '2', d: '4', e: '5' }
 ```
 
 ### Vacuum DB
 ```
+mydb> vacuum
 ```
 
 ### Show version
 ```
+mydb> version
+0.1.0
 ```
 
 

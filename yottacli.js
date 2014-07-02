@@ -46,7 +46,7 @@
 
     cliProcessors.version = function () {
         console.log(pjson.version);
-        config.setPrompt(cliProcessors.context);
+        config.setPrompt(ycp.context);
     };
     _.extend(cliProcessors, ycp);
 
