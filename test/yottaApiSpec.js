@@ -15,7 +15,7 @@
             expect(y0.closed).toBe(false);
         });
         afterEach(function () {
-            y0.close();
+            y0.close(true);
             expect(y0.closed).toBe(true);
         });
 

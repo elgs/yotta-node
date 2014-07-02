@@ -192,6 +192,7 @@ console.log(found); //{ key0: 'value0', key2: 'value2' }
 yottadb.remove('key0');
 
 yottadb.close();
+// or yottadb.close(true) to vacuum
 ```
 
 ### Asynchronously
@@ -230,6 +231,7 @@ var found = yottadb.find(function(key, index, keys) {
 
 setTimeout(function(){
 	yottadb.close();
+	// or yottadb.close(true) to vacuum
 }, 1000);
 ```
 

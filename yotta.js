@@ -70,10 +70,14 @@
         this.closed = false;
     };
 
-    Yotta.prototype.close = function () {
+    Yotta.prototype.close = function (vacuum) {
         clearInterval(this.syncId);
-        this._syncFull();
-        this._rebuildIndex(true);
+        if (vacuum) {
+            this.vacuum();
+        } else {
+            this._syncFull();
+            this._rebuildIndex(true);
+        }
         fs.unlink(this.lockFile, function (err) {
             // don't care.
         });

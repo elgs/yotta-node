@@ -17,7 +17,7 @@
         var db = new Yotta(dbName);
         db.open();
         db.put(fnParams[0], fnParams[1]);
-        db.close();
+        db.close(true);
     };
 
     p.get = function () {
@@ -38,7 +38,7 @@
         var db = new Yotta(dbName);
         db.open();
         db.remove(fnParams[0]);
-        db.close();
+        db.close(true);
     };
 
     p.findKeys = function () {

@@ -34,7 +34,7 @@
                 return;
             }
             if (db) {
-                p.close(p.config);
+                p.close();
             }
             p.context = dbName;
             db = new Yotta(p.context);
@@ -48,15 +48,20 @@
     };
 
     p.exit = function () {
-        p.close(p.config);
+        p.close(true);
         p.config.rl.close();
     };
 
     p.use = p.open;
 
     p.close = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var vacuum = false;
+        if (args && args[0]) {
+            vacuum = true;
+        }
         if (db) {
-            db.close();
+            db.close(vacuum);
             db = undefined;
         }
         if (p.context) {
