@@ -7,7 +7,7 @@ Yotta DB is a local file based key value database, written in Node.js.
 ## Module
 `npm install yotta`
 
-## CLI
+## Shell and CLI
 `npm install yotta -g`
 
 # Usage

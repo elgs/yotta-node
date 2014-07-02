@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
 (function () {
-    require('../yotta_shell.js');
+    if (process.argv.length <= 3) {
+        require('../yotta_shell.js');
+    } else {
+        require('../yotta_cli.js');
+    }
 })();

@@ -99,7 +99,7 @@
         }
     };
 
-    p.findkeys = function () {
+    p.findKeys = function () {
         var args = Array.prototype.slice.call(arguments);
         if (db) {
             var ret = db.findKeys(function (key) {
@@ -113,6 +113,8 @@
             p.config.setPrompt(p.context);
         }
     };
+
+    p.findkeys = p.findKeys;
 
     p.find = function () {
         var args = Array.prototype.slice.call(arguments);
@@ -130,7 +132,6 @@
     };
 
     p.vacuum = function () {
-        var args = Array.prototype.slice.call(arguments);
         if (db) {
             db.vacuum(function (err) {
                 if (err) {

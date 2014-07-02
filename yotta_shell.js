@@ -9,7 +9,7 @@
     var _ = require('lodash');
     var splitargs = require('splitargs');
     var pjson = require('./package.json');
-    var ycp = require('./yotta_shell_processor.js');
+    var ysp = require('./yotta_shell_processor.js');
 
     var rl = readline.createInterface({
         input: process.stdin,
@@ -37,7 +37,7 @@
         rl: rl
     };
 
-    ycp.config = config;
+    ysp.config = config;
 
     var cliProcessors = {};
     cliProcessors.exit = function () {
@@ -46,9 +46,9 @@
 
     cliProcessors.version = function () {
         console.log(pjson.version);
-        config.setPrompt(ycp.context);
+        config.setPrompt(ysp.context);
     };
-    _.extend(cliProcessors, ycp);
+    _.extend(cliProcessors, ysp);
 
     cliProcessors.quit = cliProcessors.exit;
 
@@ -63,11 +63,11 @@
             if (fn && fn.trim()) {
                 console.log(fn, 'is not implemented, yet.');
             }
-            config.setPrompt(ycp.context);
+            config.setPrompt(ysp.context);
         }
     });
 
-    if (process.argv.length >= 3) {
+    if (process.argv.length === 3) {
         rl.emit('line', 'open ' + process.argv[2]);
     }
 })();
