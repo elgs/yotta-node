@@ -15,7 +15,9 @@
         input: process.stdin,
         output: process.stdout,
         completer: function completer(line) {
-            var completions = Object.keys(cliProcessors).sort();
+            var completions = Object.keys(cliProcessors).map(function (v) {
+                return v + ' ';
+            }).sort();
             var hits = completions.filter(function (c) {
                 return c.indexOf(line) === 0;
             });
@@ -23,36 +25,45 @@
         }
     });
 
-    var setPrompt = function (rl, prompt) {
-        rl.setPrompt((prompt || '') + '> ');
-        rl.prompt(true);
+    var config = {
+        setPrompt: function (prompt) {
+            rl.setPrompt((prompt || '') + '> ');
+            rl.prompt(true);
+        },
+        clearPrompt: function () {
+            rl.prompt(false);
+        },
+        rl: rl
     };
 
-    var cliProcessors = _.extend(ycp);
-
-    setPrompt(rl);
-
-    rl.on('line', function (line) {
-        var args = splitargs(line);
-        var fn = args.shift();
-        if (typeof cliProcessors[fn] === 'function') {
-            cliProcessors[fn].apply(null, args);
-        } else {
-            if (fn.trim()) {
-                console.log(fn, 'is not implemented, yet.');
-            }
-        }
-        if (fn !== 'exit') {
-            setPrompt(rl, cliProcessors.context);
-        }
-    });
-
+    var cliProcessors = {};
     cliProcessors.exit = function () {
         rl.close();
     };
 
     cliProcessors.version = function () {
-        //console.log(Array.prototype.slice.call(arguments));
         console.log(pjson.version);
+        config.setPrompt(cliProcessors.context);
     };
+    _.extend(cliProcessors, ycp);
+
+    cliProcessors.quit = cliProcessors.exit;
+    cliProcessors.bye = cliProcessors.exit;
+
+
+    config.setPrompt(cliProcessors.context);
+
+    rl.on('line', function (line) {
+        var args = splitargs(line);
+        var fn = args.shift();
+        if (typeof cliProcessors[fn] === 'function') {
+            args.push(config);
+            cliProcessors[fn].apply(null, args);
+        } else {
+            if (fn && fn.trim()) {
+                console.log(fn, 'is not implemented, yet.');
+            }
+            config.setPrompt(cliProcessors.context);
+        }
+    });
 })();
