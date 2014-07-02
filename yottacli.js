@@ -16,7 +16,11 @@
         output: process.stdout,
         completer: function completer(line) {
             var completions = Object.keys(cliProcessors).map(function (v) {
-                return v + ' ';
+                if (typeof cliProcessors[v] === 'function') {
+                    return v + ' ';
+                } else {
+                    return '';
+                }
             }).sort();
             var hits = completions.filter(function (c) {
                 return c.indexOf(line) === 0;
@@ -30,11 +34,10 @@
             rl.setPrompt((prompt || '') + '> ');
             rl.prompt(true);
         },
-        clearPrompt: function () {
-            rl.prompt(false);
-        },
         rl: rl
     };
+
+    ycp.config = config;
 
     var cliProcessors = {};
     cliProcessors.exit = function () {
@@ -55,13 +58,12 @@
         var args = splitargs(line);
         var fn = args.shift();
         if (typeof cliProcessors[fn] === 'function') {
-            args.push(config);
             cliProcessors[fn].apply(null, args);
         } else {
             if (fn && fn.trim()) {
                 console.log(fn, 'is not implemented, yet.');
             }
-            config.setPrompt(cliProcessors.context);
+            config.setPrompt(ycp.context);
         }
     });
 })();

@@ -9,34 +9,32 @@
     var db;
 
     var p = {
-        context: ''
+        context: '',
+        config: null
     };
     module.exports = p;
 
     p.test = function () {
-        var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         console.log(Array.prototype.slice.call(arguments));
-        config.setPrompt(p.context);
+        p.config.setPrompt(p.context);
     };
 
     p.open = function () {
         var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         var dbName = args[0];
         if (dbName === p.context) {
-            config.setPrompt(p.context);
+            p.config.setPrompt(p.context);
             return;
         }
         try {
             if (!dbName) {
                 db.close();
                 p.context = dbName;
-                config.setPrompt(p.context);
+                p.config.setPrompt(p.context);
                 return;
             }
             if (db) {
-                p.close(config);
+                p.close(p.config);
             }
             p.context = dbName;
             db = new Yotta(p.context);
@@ -46,21 +44,17 @@
             db = null;
             console.log(err);
         }
-        config.setPrompt(p.context);
+        p.config.setPrompt(p.context);
     };
 
     p.exit = function () {
-        var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
-        p.close(config);
-        config.rl.close();
+        p.close(p.config);
+        p.config.rl.close();
     };
 
     p.use = p.open;
 
     p.close = function () {
-        var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         if (db) {
             db.close();
             db = undefined;
@@ -68,79 +62,81 @@
         if (p.context) {
             p.context = '';
         }
-        config.setPrompt(p.context);
+        p.config.setPrompt(p.context);
     };
 
     p.put = function () {
         var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         if (db) {
             db.put(args[0], args[1], function (err) {
                 if (err) {
                     console.log(err);
                 }
-                config.setPrompt(p.context);
+                p.config.setPrompt(p.context);
             });
         }
     };
 
     p.get = function () {
         var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         if (db) {
             db.get(args[0], function (err, value) {
                 console.log(err || value);
-                config.setPrompt(p.context);
+                p.config.setPrompt(p.context);
             });
         }
     };
 
     p.remove = function () {
         var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         if (db) {
             db.remove(args[0], function (err) {
                 if (err) {
                     console.log(err);
                 }
-                config.setPrompt(p.context);
+                p.config.setPrompt(p.context);
             });
         }
     };
 
-    p.findKeys = function () {
+    p.findkeys = function () {
         var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         if (db) {
             var ret = db.findKeys(function (key) {
-                return eval(args[0]);
+                try {
+                    return eval(args[0]);
+                } catch (err) {
+                    return null;
+                }
             });
             console.log(ret);
-            config.setPrompt(p.context);
+            p.config.setPrompt(p.context);
         }
     };
 
     p.find = function () {
         var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         if (db) {
             var ret = db.find(function (key) {
-                return eval(args[0]);
+                try {
+                    return eval(args[0]);
+                } catch (err) {
+                    return null;
+                }
             });
             console.log(ret);
-            config.setPrompt(p.context);
+            p.config.setPrompt(p.context);
         }
     };
 
     p.vacuum = function () {
         var args = Array.prototype.slice.call(arguments);
-        var config = args[args.length - 1];
         if (db) {
             db.vacuum(function (err) {
                 if (err) {
                     console.log(err);
                 }
-                config.setPrompt(p.context);
+                p.config.setPrompt(p.context);
             });
         }
     };

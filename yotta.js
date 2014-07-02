@@ -118,13 +118,17 @@
         if (value === undefined) {
             var index = self.indexBuffer[key];
             if (index && index.start >= 0 && index.length >= 0) {
-                var length = index.length;
-                var buffer = new Buffer(length);
-                var fd = fs.openSync(this.dataFile, 'r');
-                fs.readSync(fd, buffer, 0, length, index.start);
-                fs.closeSync(fd);
-                value = buffer.toString();
-                self.dataBuffer[key] = value;
+                try {
+                    var length = index.length;
+                    var buffer = new Buffer(length);
+                    var fd = fs.openSync(this.dataFile, 'r');
+                    fs.readSync(fd, buffer, 0, length, index.start);
+                    fs.closeSync(fd);
+                    value = buffer.toString();
+                    self.dataBuffer[key] = value;
+                } catch (err) {
+                    return err;
+                }
             } else {
                 value = undefined;
             }
@@ -137,11 +141,11 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                try {
-                    var ret = self._get(key);
+                var ret = self._get(key);
+                if (ret instanceof Error) {
+                    ca(ret);
+                } else {
                     cb(null, ret);
-                } catch (err) {
-                    cb(err);
                 }
             });
         } else {
@@ -154,11 +158,15 @@
         var self = this;
         delete self.dataBuffer[key];
         delete self.indexBuffer[key];
-        var i = self.keySyncBuffer.indexOf(key);
-        if (i > -1) {
-            self.keySyncBuffer.splice(i, 1);
+        try {
+            var i = self.keySyncBuffer.indexOf(key);
+            if (i > -1) {
+                self.keySyncBuffer.splice(i, 1);
+            }
+            fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
+        } catch (err) {
+            return err;
         }
-        fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
     };
 
     Yotta.prototype.remove = function (key, cb) {
@@ -166,12 +174,7 @@
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                try {
-                    self._remove(key);
-                    cb(null);
-                } catch (err) {
-                    cb(err);
-                }
+                cb(self._remove(key));
             });
         } else {
             // sync
