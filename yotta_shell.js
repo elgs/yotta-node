@@ -9,7 +9,7 @@
     var _ = require('lodash');
     var splitargs = require('splitargs');
     var pjson = require('./package.json');
-    var ycp = require('./yottacliprocessor.js');
+    var ycp = require('./yotta_shell_processor.js');
 
     var rl = readline.createInterface({
         input: process.stdin,

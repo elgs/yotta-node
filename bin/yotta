@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
 (function () {
-    require('../yottacli.js');
+    require('../yotta_shell.js');
 })();

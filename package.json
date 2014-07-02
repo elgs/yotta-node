@@ -1,34 +1,34 @@
 {
-  "name": "yotta",
-  "version": "0.1.0",
-  "description": "Yotta DB is a local file based key value database, written in Node.js.",
-  "main": "yotta.js",
-  "bin": {
-    "yotta": "./bin/yotta"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/elgs/yotta-node"
-  },
-  "keywords": [
-    "yotta",
-    "jason",
-    "database",
-    "db"
-  ],
-  "author": "Elgs Chen",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/elgs/yotta-node/issues"
-  },
-  "homepage": "https://github.com/elgs/yotta-node",
-  "dependencies": {
-    "lodash": "*",
-    "mkdirp": "*",
-    "rimraf": "*",
-    "splitargs": "0.0.3"
-  }
+    "name": "yotta",
+    "version": "0.1.1",
+    "description": "Yotta DB is a local file based key value database, written in Node.js.",
+    "main": "yotta.js",
+    "bin": {
+        "yotta": "./bin/yotta"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/elgs/yotta-node"
+    },
+    "keywords": [
+        "yotta",
+        "jason",
+        "database",
+        "db"
+    ],
+    "author": "Elgs Chen",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/elgs/yotta-node/issues"
+    },
+    "homepage": "https://github.com/elgs/yotta-node",
+    "dependencies": {
+        "lodash": "*",
+        "mkdirp": "*",
+        "rimraf": "*",
+        "splitargs": "0.0.3"
+    }
 }

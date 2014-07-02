@@ -12,7 +12,7 @@ Yotta DB is a local file based key value database, written in Node.js.
 
 # Usage
 
-## Interactive CLI
+## Yotta Shell
 
 ### Create a new DB
 
@@ -97,11 +97,10 @@ mydb> vacuum
 ### Show version
 ```
 mydb> version
-0.1.0
+0.1.1
 ```
 
-
-## CLI
+## Yotta CLI
 TODO:
 
 ## Module
@@ -199,7 +198,6 @@ layer, and the cache is synchronized to the disk every second or when the cache 
 # Roadmap
 There are several things on my mind to do for Yotta DB:
 
-1. A command line shell interface to manipulate the databases;
-2. Implementation in other languages like Golang, Java and C;
+1. Implementation in other languages like Golang, Java and C;
 
 Patches and ideas welcome.
