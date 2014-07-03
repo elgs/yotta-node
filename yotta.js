@@ -147,7 +147,7 @@
             setImmediate(function () {
                 var ret = self._get(key);
                 if (ret instanceof Error) {
-                    ca(ret);
+                    cb(ret);
                 } else {
                     cb(null, ret);
                 }
