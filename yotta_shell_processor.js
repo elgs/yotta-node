@@ -79,6 +79,9 @@
                 }
                 p.config.setPrompt(p.context);
             });
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
         }
     };
 
@@ -89,6 +92,9 @@
                 console.log(err || value);
                 p.config.setPrompt(p.context);
             });
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
         }
     };
 
@@ -101,6 +107,9 @@
                 }
                 p.config.setPrompt(p.context);
             });
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
         }
     };
 
@@ -115,6 +124,9 @@
                 }
             });
             console.log(ret);
+            p.config.setPrompt(p.context);
+        } else {
+            console.log('DB is not opened yet.');
             p.config.setPrompt(p.context);
         }
     };
@@ -133,6 +145,9 @@
             });
             console.log(ret);
             p.config.setPrompt(p.context);
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
         }
     };
 
@@ -144,6 +159,9 @@
                 }
                 p.config.setPrompt(p.context);
             });
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
         }
     };
 })();
