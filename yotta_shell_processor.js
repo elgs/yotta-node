@@ -48,7 +48,7 @@
     };
 
     p.exit = function () {
-        p.close(true);
+        p.close();
         p.config.rl.close();
     };
 

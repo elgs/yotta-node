@@ -39,29 +39,12 @@
         this.indexBuffer = {};
         this.keySyncBuffer = [];
         fs.openSync(this.lockFile, 'w');
-        var fd = fs.openSync(this.indexFile, 'a');
-        var indexString = fs.readFileSync(this.indexFile, 'utf8');
+        var fd = fs.openSync(this.dataFile, 'a');
         fs.closeSync(fd);
-        fd = fs.openSync(this.dataFile, 'a');
+        fd = fs.openSync(this.indexFile, 'a');
         fs.closeSync(fd);
-        indexString.split('\n').map(function (val) {
-            if (val && val.trim()) {
-                var tokens = val.split(',');
-                var tokenLength = tokens.length;
-                var key = tokens.slice(0, tokenLength - 2).join(',');
-                var start = tokens[tokenLength - 2] >> 0;
-                var length = tokens[tokenLength - 1] >> 0;
-                if (start >= 0 && length >= 0) {
-                    this.indexBuffer[key] = {
-                        start: start,
-                        length: length
-                    };
-                } else {
-                    delete this.dataBuffer[key];
-                    delete this.indexBuffer[key];
-                }
-            }
-        }, this);
+
+        this._rebuildIndex(false);
         var self = this;
         this.syncId = setInterval(function () {
             //console.log('sync...');
@@ -311,18 +294,28 @@
                 var start = tokens[tokenLength - 2] >> 0;
                 var length = tokens[tokenLength - 1] >> 0;
                 if (start >= 0 && length >= 0) {
-                    this.indexBuffer[key] = val + '\n';
+                    this.indexBuffer[key] = {
+                        start: start,
+                        length: length
+                    };
                 } else {
+                    delete this.dataBuffer[key];
                     delete this.indexBuffer[key];
                 }
             }
         }, this);
         if (writeBack) {
-            for (var i in this.indexBuffer) {
-                tmpIndexBufferString += this.indexBuffer[i];
+            for (var key in this.indexBuffer) {
+                var index = this.indexBuffer[key];
+                tmpIndexBufferString += key + ',' + index.start + ',' + index.length + '\n';
             }
             fs.writeFileSync(this.indexFile, tmpIndexBufferString);
         }
+    };
+
+    Yotta.prototype.stats = function () {
+        // returns [holeSize, dataSize, holeRate]
+        this._rebuildIndex();
     };
 
     exports.Yotta = Yotta;
