@@ -253,6 +253,7 @@ yottadb.vacuum(function(){
 Get the hole size information from the data file.
 ```javascript
 var statsInfo = yottadb.stats();
+console.log(statsInfo);
 // { holdSize: 630, dataFileSize: 672, holdRatio: 0.9375 }
 ```
 Now it looks to be a perfect chance do a vacuum.
