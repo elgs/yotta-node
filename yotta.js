@@ -250,7 +250,11 @@
             });
         } else {
             // sync
-            self._vacuum();
+            try {
+                self._vacuum();
+            } catch (err) {
+                return err;
+            }
         }
     };
 
@@ -315,7 +319,19 @@
 
     Yotta.prototype.stats = function () {
         // returns [holeSize, dataSize, holeRate]
-        this._rebuildIndex();
+        this._syncFull();
+        var dataFileSize = fs.statSync(this.dataFile).size;
+        var dataSize = 0;
+        for (var key in this.indexBuffer) {
+            var index = this.indexBuffer[key];
+            dataSize += index.length;
+        }
+        var holeSize = dataFileSize - dataSize;
+        return {
+            holdSize: holeSize,
+            dataFileSize: dataFileSize,
+            holdRatio: holeSize / dataFileSize
+        };
     };
 
     exports.Yotta = Yotta;

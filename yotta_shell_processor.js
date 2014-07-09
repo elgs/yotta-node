@@ -153,12 +153,21 @@
 
     p.vacuum = function () {
         if (db) {
-            db.vacuum(function (err) {
-                if (err) {
-                    console.log(err);
-                }
-                p.config.setPrompt(p.context);
-            });
+            var ret = db.vacuum();
+            if (ret) {
+                console.log(ret);
+            }
+            p.config.setPrompt(p.context);
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
+        }
+    };
+
+    p.stats = function () {
+        if (db) {
+            console.log(db.stats());
+            p.config.setPrompt(p.context);
         } else {
             console.log('DB is not opened yet.');
             p.config.setPrompt(p.context);

@@ -236,8 +236,9 @@ setTimeout(function(){
 ```
 
 # More APIs
-##vacuum
-Each remove operation causes fragments in the data file, `vacuum` will help to compact the data file.
+## vacuum
+Each remove operation causes fragments in the data file, `vacuum` will help to
+compact the data file.
 ```javascript
 // synchronously
 yottadb.vacuum();
@@ -248,10 +249,26 @@ yottadb.vacuum(function(){
 });
 ```
 
+## stats
+Get the hole size information from the data file.
+```javascript
+var statsInfo = yottadb.stats();
+// { holdSize: 630, dataFileSize: 672, holdRatio: 0.9375 }
+```
+Now it looks to be a perfect chance do a vacuum.
+```javascript
+yottadb.vacuum(function(){
+	console.log(yottadb.stats());
+});
+// { holdSize: 0, dataFileSize: 42, holdRatio: 0 }
+```
+
 # About
-The motivation of creating the Yotta DB is that I was looking for something similar to Redis without installation as a
-heavy dependency. High performance is a concern in the design of Yotta DB. Most operations happen in a memory cache
-layer, and the cache is synchronized to the disk every second or when the cache is too large.
+The motivation of creating the Yotta DB is that I was looking for something
+similar to Redis without installation as a heavy dependency. High performance
+is a concern in the design of Yotta DB. Most operations happen in a memory
+cache layer, and the cache is synchronized to the disk every second or when
+the cache is too large.
 
 # Roadmap
 There are several things on my mind to do for Yotta DB:

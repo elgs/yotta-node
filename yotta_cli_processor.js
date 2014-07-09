@@ -85,4 +85,13 @@
         db.vacuum();
         db.close();
     };
+
+    p.stats = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var dbName = args[0]; // string
+        var db = new Yotta(dbName);
+        db.open();
+        console.log(db.stats());
+        db.close();
+    };
 })();
