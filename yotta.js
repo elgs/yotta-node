@@ -334,5 +334,15 @@
         };
     };
 
+    Yotta.prototype.rebuildValueIndex = function (fieldPath) {
+    };
+
+    Yotta.prototype.findKeysFromValue = function (test) {
+    };
+
+    Yotta.prototype.findFromValue = function (test) {
+    };
+
+
     exports.Yotta = Yotta;
 })();
