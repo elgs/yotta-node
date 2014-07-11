@@ -334,13 +334,13 @@
         };
     };
 
-    Yotta.prototype.rebuildValueIndex = function (fieldPath) {
+    Yotta.prototype.rebuildValueIndex = function (indexPath, test) {
     };
 
-    Yotta.prototype.findKeysFromValue = function (test) {
+    Yotta.prototype.findKeysFromValue = function (indexPath, test) {
     };
 
-    Yotta.prototype.findFromValue = function (test) {
+    Yotta.prototype.findFromValue = function (indexPath, test) {
     };
 
 
