@@ -71,8 +71,8 @@
     };
 
     p.put = function () {
-        var args = Array.prototype.slice.call(arguments);
         if (db) {
+            var args = Array.prototype.slice.call(arguments);
             db.put(args[0], args[1], function (err) {
                 if (err) {
                     console.log(err);
@@ -86,8 +86,8 @@
     };
 
     p.get = function () {
-        var args = Array.prototype.slice.call(arguments);
         if (db) {
+            var args = Array.prototype.slice.call(arguments);
             db.get(args[0], function (err, value) {
                 console.log(err || value);
                 p.config.setPrompt(p.context);
@@ -99,8 +99,8 @@
     };
 
     p.remove = function () {
-        var args = Array.prototype.slice.call(arguments);
         if (db) {
+            var args = Array.prototype.slice.call(arguments);
             db.remove(args[0], function (err) {
                 if (err) {
                     console.log(err);
@@ -114,8 +114,8 @@
     };
 
     p.findKeys = function () {
-        var args = Array.prototype.slice.call(arguments);
         if (db) {
+            var args = Array.prototype.slice.call(arguments);
             var ret = db.findKeys(function (key) {
                 try {
                     return eval(args[0]);
@@ -134,8 +134,8 @@
     p.findkeys = p.findKeys;
 
     p.find = function () {
-        var args = Array.prototype.slice.call(arguments);
         if (db) {
+            var args = Array.prototype.slice.call(arguments);
             var ret = db.find(function (key) {
                 try {
                     return eval(args[0]);
@@ -167,6 +167,20 @@
     p.stats = function () {
         if (db) {
             console.log(db.stats());
+            p.config.setPrompt(p.context);
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
+        }
+    };
+
+    p.rebuildValueIndex = function () {
+        if (db) {
+            var args = Array.prototype.slice.call(arguments);
+            var test = function (value) {
+                return eval(args[1]);
+            };
+            db.rebuildValueIndex(args[0], test);
             p.config.setPrompt(p.context);
         } else {
             console.log('DB is not opened yet.');
