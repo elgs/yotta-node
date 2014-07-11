@@ -346,7 +346,6 @@
             vIndex[indexValue] = vIndex[indexValue] || [];
             vIndex[indexValue].push(key);
         }
-        //fs.openSync(this.dbPath + '/' + indexPath, 'w');
         fs.writeFileSync(this.dbPath + '/' + indexPath, JSON.stringify(vIndex));
 
     };

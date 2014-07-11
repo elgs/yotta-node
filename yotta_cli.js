@@ -17,6 +17,8 @@
         if (ret) {
             console.log(ret);
         }
+    } else {
+        console.log(fn, 'is not implemented, yet.');
     }
 
     if (fn === 'version') {

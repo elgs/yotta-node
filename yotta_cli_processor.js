@@ -94,4 +94,18 @@
         console.log(db.stats());
         db.close();
     };
+
+    // yotta a rebuildValueIndex length value.length
+    p.rebuildValueIndex = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var dbName = args[0]; // string
+        var fnParams = args[1]; // array
+        var db = new Yotta(dbName);
+        db.open();
+        var test = function (value) {
+            return eval(fnParams[1]);
+        };
+        db.rebuildValueIndex(fnParams[0], test);
+        db.close();
+    };
 })();
