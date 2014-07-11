@@ -18,9 +18,9 @@
             maxDataBufferSize: 1000000
         };
         this.dbPath = path.resolve(dbPath);
-        this.dataFile = dbPath + '/data';
-        this.indexFile = dbPath + '/index';
-        this.lockFile = dbPath + '/.lock';
+        this.dataFile = this.dbPath + '/data';
+        this.indexFile = this.dbPath + '/index';
+        this.lockFile = this.dbPath + '/.lock';
         this.closed = true;
         this.syncInterval = config.syncInterval || 1;
         this.syncBufferSize = config.syncBufferSize || 1000;
@@ -334,7 +334,20 @@
         };
     };
 
+    // test(value)
     Yotta.prototype.rebuildValueIndex = function (indexPath, test) {
+        var vIndex = {};
+        var allData = this.find(function () {
+            return true;
+        });
+        for (var key in allData) {
+            var value = allData[key];
+            var indexValue = test(value);
+            vIndex[indexValue] = vIndex[indexValue] || [];
+            vIndex[indexValue].push(key);
+        }
+        fs.openSync(this.dbPath + '/' + indexPath, 'w');
+        fs.writeFileSync(this.dbPath + '/' + indexPath, JSON.stringify(vIndex));
     };
 
     Yotta.prototype.findKeysFromValue = function (indexPath, test) {
