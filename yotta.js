@@ -28,6 +28,7 @@
         this.maxDataBufferSize = config.maxDataBufferSize || 1000000;
         this.purgeInterval = config.purgeInterval || 600;
         this.totalHits = 0;
+        this.valueIndex = {};
         mkdirp.sync(this.dbPath);
     };
 
@@ -377,14 +378,25 @@
             vIndex[indexValue] = vIndex[indexValue] || [];
             vIndex[indexValue].push(key);
         }
-        fs.writeFileSync(this.dbPath + '/' + indexPath, JSON.stringify(vIndex));
-
+        this.valueIndex[indexPath] = vIndex;
+        fs.writeFileSync(this.dbPath + '/' + indexPath + '.idx', JSON.stringify(vIndex));
     };
 
+    // test(value)
     Yotta.prototype.findKeysFromValue = function (indexPath, test) {
+        var ret = [];
+        var vIndex = this.valueIndex[indexPath];
+        for (var value in vIndex) {
+            if (test(value)) {
+                var keys = vIndex[value];
+                Array.prototype.push.apply(ret, keys);
+            }
+        }
+        return ret;
     };
 
     Yotta.prototype.findFromValue = function (indexPath, test) {
+        var vIndex = this.valueIndex[indexPath];
     };
 
 
