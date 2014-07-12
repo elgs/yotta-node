@@ -10,6 +10,7 @@
     var mkdirp = require('mkdirp');
     var rimraf = require('rimraf');
     var _ = require('lodash');
+    var stringx = require('stringx');
 
     var Yotta = function (dbPath, config) {
         config = config || {
@@ -27,8 +28,6 @@
         this.syncBufferSize = config.syncBufferSize || 1000;
         this.maxDataBufferSize = config.maxDataBufferSize || 1000000;
         this.purgeInterval = config.purgeInterval || 600;
-        this.totalHits = 0;
-        this.valueIndex = {};
         mkdirp.sync(this.dbPath);
     };
 
@@ -42,6 +41,8 @@
         this.dataBuffer = {};
         this.indexBuffer = {};
         this.keySyncBuffer = [];
+        this.totalHits = 0;
+        this.valueIndex = this._loadValueIndex();
         fs.openSync(this.lockFile, 'w');
         var fd = fs.openSync(this.dataFile, 'a');
         fs.closeSync(fd);
@@ -364,6 +365,17 @@
             dataFileSize: dataFileSize,
             holdRatio: holeSize / dataFileSize
         };
+    };
+
+    Yotta.prototype._loadValueIndex = function () {
+        var ret = {};
+        fs.readdirSync(this.dbPath).forEach(function (file) {
+            if (stringx.endsWith(file, '.idx')) {
+                var vIndexString = fs.readFileSync(this.dbPath + '/' + file, 'utf8');
+                ret[file.substring(0, file.length - 4)] = JSON.parse(vIndexString);
+            }
+        }, this);
+        return ret;
     };
 
     // test(value)

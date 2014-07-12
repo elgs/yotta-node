@@ -29,6 +29,7 @@
         "lodash": "*",
         "mkdirp": "*",
         "rimraf": "*",
-        "splitargs": "0.0.3"
+        "splitargs": "0.0.3",
+        "stringx": "0.0.1"
     }
 }
