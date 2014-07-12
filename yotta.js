@@ -15,7 +15,8 @@
         config = config || {
             syncInterval: 1,
             syncBufferSize: 1000,
-            maxDataBufferSize: 1000000
+            maxDataBufferSize: 1000000,
+            purgeInterval: 600
         };
         this.dbPath = path.resolve(dbPath);
         this.dataFile = this.dbPath + '/data';
@@ -25,6 +26,8 @@
         this.syncInterval = config.syncInterval || 1;
         this.syncBufferSize = config.syncBufferSize || 1000;
         this.maxDataBufferSize = config.maxDataBufferSize || 1000000;
+        this.purgeInterval = config.purgeInterval || 600;
+        this.totalHits = 0;
         mkdirp.sync(this.dbPath);
     };
 
@@ -50,11 +53,15 @@
             //console.log('sync...');
             self._syncFull();
         }, this.syncInterval * 1000);
+        this.purgeId = setInterval(function () {
+            self.purgeDataBuffer();
+        }, this.purgeInterval * 1000);
         this.closed = false;
     };
 
     Yotta.prototype.close = function (vacuum) {
         clearInterval(this.syncId);
+        clearInterval(this.purgeId);
         if (vacuum) {
             this.vacuum();
         } else {
@@ -124,6 +131,7 @@
             if (index && index.start >= 0 && index.length >= 0) {
                 index.hits = index.hits || 0;
                 ++index.hits;
+                ++self.totalHits;
                 index.lastHit = new Date().getTime();
             }
         }
@@ -321,6 +329,22 @@
                 tmpIndexBufferString += key + ',' + index.start + ',' + index.length + '\n';
             }
             fs.writeFileSync(this.indexFile, tmpIndexBufferString);
+        }
+    };
+
+    Yotta.prototype.purgeDataBuffer = function () {
+        var dataBufferSize = Object.keys(this.dataBuffer).length;
+        if (this.maxDataBufferSize > dataBufferSize) {
+            return;
+        }
+        var tenMinutesAgo = new Date().getTime() - 3600 * 1000;
+        var tenthOfTotalHits = this.totalHits / 10;
+        for (var key in this.indexBuffer) {
+            var index = this.indexBuffer[key];
+            if (!index.hits || index.hits < tenthOfTotalHits || index.lastHit < tenMinutesAgo) {
+                // no hit or less than a tenth of total hits or no hit in the last hour
+                delete this.dataBuffer[key];
+            }
         }
     };
 
