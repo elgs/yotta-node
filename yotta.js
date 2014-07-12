@@ -102,8 +102,8 @@
     Yotta.prototype._get = function (key) {
         var self = this;
         var value = self.dataBuffer[key];
+        var index = self.indexBuffer[key];
         if (value === undefined) {
-            var index = self.indexBuffer[key];
             if (index && index.start >= 0 && index.length >= 0) {
                 try {
                     var length = index.length;
@@ -118,6 +118,13 @@
                 }
             } else {
                 value = undefined;
+            }
+        } else {
+            //update hit stats
+            if (index && index.start >= 0 && index.length >= 0) {
+                index.hits = index.hits || 0;
+                ++index.hits;
+                index.lastHit = new Date().getTime();
             }
         }
         return value;
