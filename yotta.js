@@ -396,7 +396,17 @@
     };
 
     Yotta.prototype.findFromValue = function (indexPath, test) {
+        var ret = {};
         var vIndex = this.valueIndex[indexPath];
+        for (var value in vIndex) {
+            if (test(value)) {
+                var keys = vIndex[value];
+                for (var key in keys) {
+                    ret[key] = this.get(key);
+                }
+            }
+        }
+        return ret;
     };
 
 
