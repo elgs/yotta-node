@@ -299,6 +299,20 @@ This will return an array of keys which values equals to `1`. if cb is null,
 `findKeysFromValue` is called synchronously, and the array of keys is returned.
 
 ## findFromValue
+`findFromValue` works exactly as `findKeysFromValue`, with the only exception
+that it returns a key value object, as opposed to an array of keys returned by
+`findKeysFromValue`.
+```javascript
+var indexPath = 'raw';
+var test = function(value){
+    return value === 1;
+};
+var cb = function(err, ret){
+    if (err) console.log(err);
+    console.log(ret);
+};
+yottadb.findFromValue(indexPath, test, cb)
+```
 
 # About
 The motivation of creating the Yotta DB is that I was looking for something
