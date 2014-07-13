@@ -266,6 +266,25 @@ yottadb.vacuum(function(){
 // { holdSize: 0, dataFileSize: 42, holdRatio: 0 }
 ```
 
+## rebuildValueIndex
+Yotta DB does not assume what values are put in the database. A `value index`
+needs to be built before you can search against the values. `rebuildValueIndex`
+will help to build a `value index`.
+```javascript
+var indexPath = 'raw';
+var test = function(value){
+    return value;
+};
+yottadb.rebuildValueIndex(indexPath, test);
+```
+This will create a value index file `raw.idx`. The original value will be
+indexed. Of course you can also create a more sophisticated function index by
+give the `test` function more logic.
+
+## findKeysFromValue
+
+## findFromValue
+
 # About
 The motivation of creating the Yotta DB is that I was looking for something
 similar to Redis without installation as a heavy dependency. High performance
