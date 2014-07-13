@@ -279,9 +279,24 @@ yottadb.rebuildValueIndex(indexPath, test);
 ```
 This will create a value index file `raw.idx`. The original value will be
 indexed. Of course you can also create a more sophisticated function index by
-give the `test` function more logic.
+giving the `test` function more logic.
 
 ## findKeysFromValue
+`findKeysFromValue` helps to find an array of keys against the values in the
+database, according to the search logic defined by the `test` function.
+```javascript
+var indexPath = 'raw';
+var test = function(value){
+    return value === 1;
+};
+var cb = function(err, ret){
+    if (err) console.log(err);
+    console.log(ret);
+};
+yottadb.findKeysFromValue(indexPath, test, cb)
+```
+This will return an array of keys which values equals to `1`. if cb is null,
+`findKeysFromValue` is called synchronously, and the array of keys is returned.
 
 ## findFromValue
 
