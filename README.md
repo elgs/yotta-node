@@ -300,8 +300,8 @@ This will return an array of keys which values equals to `1`. if cb is null,
 
 ## findFromValue
 `findFromValue` works exactly as `findKeysFromValue`, with the only exception
-that it returns a key value object, as opposed to an array of keys returned by
-`findKeysFromValue`.
+that it returns a key value object, as opposed to an array of keys, like
+returned by `findKeysFromValue`.
 ```javascript
 var indexPath = 'raw';
 var test = function(value){
