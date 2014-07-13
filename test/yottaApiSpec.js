@@ -142,11 +142,28 @@
             expect(y0.get('k105')).toBe('v105');
         });
 
-        it('should should continue to work after vacuum asynchronously', function (done) {
+        it('should continue to work after vacuum asynchronously', function (done) {
             y0.vacuum(function (err) {
                 expect(y0.get('k105')).toBe('v105');
                 done();
             });
+        });
+
+        it('should build value index and the index should work.', function () {
+            y0.rebuildValueIndex('value', function (value) {
+                return value;
+            });
+
+            var ka = y0.findKeysFromValue('value', function (value) {
+                return value === 'va200';
+            });
+            expect(ka.length).toBe(1);
+            expect(ka[0]).toBe('ka200');
+
+            var va = y0.findFromValue('value', function (value) {
+                return value === 'va400';
+            });
+            expect(va['ka400']).toBe('va400');
         });
     });
 })();

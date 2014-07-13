@@ -413,7 +413,8 @@
         for (var value in vIndex) {
             if (test(value)) {
                 var keys = vIndex[value];
-                for (var key in keys) {
+                for (var i in keys) {
+                    var key = keys[i];
                     ret[key] = this.get(key);
                 }
             }
