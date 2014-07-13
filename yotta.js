@@ -394,34 +394,76 @@
         fs.writeFileSync(this.dbPath + '/' + indexPath + '.idx', JSON.stringify(vIndex));
     };
 
-    // test(value)
-    Yotta.prototype.findKeysFromValue = function (indexPath, test) {
+    Yotta.prototype._findKeysFromValue = function (indexPath, test) {
         var ret = [];
-        var vIndex = this.valueIndex[indexPath];
-        for (var value in vIndex) {
-            if (test(value)) {
-                var keys = vIndex[value];
-                Array.prototype.push.apply(ret, keys);
-            }
-        }
-        return ret;
-    };
-
-    Yotta.prototype.findFromValue = function (indexPath, test) {
-        var ret = {};
-        var vIndex = this.valueIndex[indexPath];
-        for (var value in vIndex) {
-            if (test(value)) {
-                var keys = vIndex[value];
-                for (var i in keys) {
-                    var key = keys[i];
-                    ret[key] = this.get(key);
+        try {
+            var vIndex = this.valueIndex[indexPath];
+            for (var value in vIndex) {
+                if (test(value)) {
+                    var keys = vIndex[value];
+                    Array.prototype.push.apply(ret, keys);
                 }
             }
+        } catch (err) {
+            ret = err;
         }
         return ret;
     };
 
+    // test(value), cb(err, ret)
+    Yotta.prototype.findKeysFromValue = function (indexPath, test, cb) {
+        var self = this;
+        if (typeof cb === 'function') {
+            // async
+            setImmediate(function () {
+                var ret = self._findKeysFromValue(indexPath, test);
+                if (ret instanceof Error) {
+                    cb(ret, null);
+                } else {
+                    cb(null, ret);
+                }
+            });
+        } else {
+            // sync
+            return this._findKeysFromValue(indexPath, test);
+        }
+    };
+
+    Yotta.prototype._findFromValue = function (indexPath, test) {
+        var ret = {};
+        try {
+            var vIndex = this.valueIndex[indexPath];
+            for (var value in vIndex) {
+                if (test(value)) {
+                    var keys = vIndex[value];
+                    for (var i in keys) {
+                        var key = keys[i];
+                        ret[key] = this.get(key);
+                    }
+                }
+            }
+        } catch (err) {
+            ret = err;
+        }
+        return ret;
+    };
+
+    // test(value), cb(err, ret)
+    Yotta.prototype.findFromValue = function (indexPath, test, cb) {
+        var self = this;
+        if (typeof cb === 'function') {
+            // async
+            var ret = self._findFromValue(indexPath, test);
+            if (ret instanceof Error) {
+                cb(ret, null);
+            } else {
+                cb(null, ret);
+            }
+        } else {
+            // sync
+            return this._findFromValue(indexPath, test);
+        }
+    };
 
     exports.Yotta = Yotta;
 })();

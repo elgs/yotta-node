@@ -5,6 +5,7 @@
 (function () {
     "use strict";
 
+    var fs = require('fs');
     var Yotta = require('../yotta.js').Yotta;
     var y0 = new Yotta('/Volumes/RAMDrive/test_yotta/testApiDb');
 
@@ -149,11 +150,15 @@
             });
         });
 
-        it('should build value index and the index should work.', function () {
+        it('should build value index.', function () {
             y0.rebuildValueIndex('value', function (value) {
                 return value;
             });
+            var idxExists = fs.existsSync(y0.dbPath + '/value.idx');
+            expect(idxExists).toBeTruthy();
+        });
 
+        it('should let value index work synchronously.', function () {
             var ka = y0.findKeysFromValue('value', function (value) {
                 return value === 'va200';
             });
@@ -164,6 +169,25 @@
                 return value === 'va400';
             });
             expect(va['ka400']).toBe('va400');
+        });
+
+        it('should let value index for keys work asynchronously.', function (done) {
+            y0.findKeysFromValue('value', function (value) {
+                return value === 'va200';
+            }, function (err, ka) {
+                expect(ka.length).toBe(1);
+                expect(ka[0]).toBe('ka200');
+                done();
+            });
+        });
+
+        it('should let value index work asynchronously.', function (done) {
+            y0.findFromValue('value', function (value) {
+                return value === 'va400';
+            }, function (err, va) {
+                expect(va['ka400']).toBe('va400');
+                done();
+            });
         });
     });
 })();
