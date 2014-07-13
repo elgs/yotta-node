@@ -36,9 +36,10 @@ mydb> exit
 ```
 $ yotta
 >
-close      exit       find       findKeys   findkeys   get        open
-put        quit       remove     stats      test       use        vacuum
-version
+close               exit                find                findFromValue       findKeys
+findKeysFromValue   findfromvalue       findkeys            findkeysfromvalue   get
+open                put                 quit                rebuildValueIndex   rebuildvalueindex
+remove              stats               test                use                 vacuum
 
 >
 ```
@@ -97,7 +98,7 @@ mydb> vacuum
 ### Show version
 ```
 mydb> version
-0.1.5
+0.1.6
 ```
 
 ## Yotta CLI

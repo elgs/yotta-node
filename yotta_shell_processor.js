@@ -187,4 +187,37 @@
             p.config.setPrompt(p.context);
         }
     };
+    p.rebuildvalueindex = p.rebuildValueIndex;
+
+    p.findKeysFromValue = function () {
+        if (db) {
+            var args = Array.prototype.slice.call(arguments);
+            var test = function (value) {
+                return eval(args[1]);
+            };
+            var ret = db.findKeysFromValue(args[0], test);
+            console.log(ret);
+            p.config.setPrompt(p.context);
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
+        }
+    };
+    p.findkeysfromvalue = p.findKeysFromValue;
+
+    p.findFromValue = function () {
+        if (db) {
+            var args = Array.prototype.slice.call(arguments);
+            var test = function (value) {
+                return eval(args[1]);
+            };
+            var ret = db.findFromValue(args[0], test);
+            console.log(ret);
+            p.config.setPrompt(p.context);
+        } else {
+            console.log('DB is not opened yet.');
+            p.config.setPrompt(p.context);
+        }
+    };
+    p.findfromvalue = p.findFromValue;
 })();
