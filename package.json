@@ -1,6 +1,6 @@
 {
     "name": "yotta",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "Yotta DB is a local file based key value database, written in Node.js.",
     "main": "yotta.js",
     "bin": {
