@@ -36,10 +36,12 @@ mydb> exit
 ```
 $ yotta
 >
-close               exit                find                findFromValue       findKeys
-findKeysFromValue   findfromvalue       findkeys            findkeysfromvalue   get
-open                put                 quit                rebuildValueIndex   rebuildvalueindex
-remove              stats               test                use                 vacuum
+close               exit                find                findFromValue
+findKeys            findKeysFromValue   findfromvalue       findkeys
+findkeysfromvalue   get                 open                put
+quit                rebuildValueIndex   rebuildvalueindex   remove
+stats               test                use                 vacuum
+version
 
 >
 ```
