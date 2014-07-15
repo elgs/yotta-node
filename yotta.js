@@ -380,24 +380,27 @@
 
     // test(value)
     Yotta.prototype.rebuildValueIndex = function (indexPath, test) {
-        var vIndex = {};
         var allData = this.find(function () {
             return true;
         });
+        var vIndex = {};
         for (var key in allData) {
             var value = allData[key];
             var indexValue = test(value);
             vIndex[indexValue] = vIndex[indexValue] || [];
             vIndex[indexValue].push(key);
         }
-        this.valueIndex[indexPath] = vIndex;
-        fs.writeFileSync(this.dbPath + '/' + indexPath + '.idx', JSON.stringify(vIndex));
+        this.valueIndex[indexPath] = {
+            fn: test.toString(),
+            keys: vIndex
+        };
+        fs.writeFileSync(this.dbPath + '/' + indexPath + '.idx', JSON.stringify(this.valueIndex[indexPath]));
     };
 
     Yotta.prototype._findKeysFromValue = function (indexPath, test) {
         var ret = [];
         try {
-            var vIndex = this.valueIndex[indexPath];
+            var vIndex = this.valueIndex[indexPath].keys;
             for (var value in vIndex) {
                 if (test(value)) {
                     var keys = vIndex[value];
@@ -432,7 +435,7 @@
     Yotta.prototype._findFromValue = function (indexPath, test) {
         var ret = {};
         try {
-            var vIndex = this.valueIndex[indexPath];
+            var vIndex = this.valueIndex[indexPath].keys;
             for (var value in vIndex) {
                 if (test(value)) {
                     var keys = vIndex[value];

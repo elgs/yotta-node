@@ -1,6 +1,6 @@
 {
     "name": "yotta",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "description": "Yotta DB is a local file based key value database, written in Node.js.",
     "main": "yotta.js",
     "bin": {
@@ -29,7 +29,7 @@
         "lodash": "*",
         "mkdirp": "*",
         "rimraf": "*",
-        "splitargs": "0.0.3",
-        "stringx": "0.0.1"
+        "splitargs": "*",
+        "stringx": "*"
     }
 }
