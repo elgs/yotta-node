@@ -177,9 +177,8 @@
     p.rebuildValueIndex = function () {
         if (db) {
             var args = Array.prototype.slice.call(arguments);
-            var test = function (value) {
-                return eval(args[1]);
-            };
+            var test = null;
+            eval('test=' + args[1]);
             db.rebuildValueIndex(args[0], test);
             p.config.setPrompt(p.context);
         } else {

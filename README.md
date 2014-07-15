@@ -92,6 +92,31 @@ mydb> find true
 { a: '1', b: '2', d: '4', e: '5' }
 ```
 
+### findkeysfromvalue
+$ yotta
+> use a
+a> put a 1
+a> put b 2
+a> rebuildvalueindex value 'function(value){return value;}
+a> put c 3
+a> findkeysfromvalue value "value==='3'"
+[ 'c' ]
+a> findkeysfromvalue value "value>=2"
+[ 'b', 'c' ]
+a>
+
+### findfromvalue
+$ yotta
+> use a
+a> put a 1
+a> put b 2
+a> rebuildvalueindex value 'function(value){return value;}
+a> put c 3
+a> findfromvalue value "value>=2"
+{ b: '2', c: '3' }
+a>
+
+
 ### Vacuum DB
 ```
 mydb> vacuum
@@ -100,7 +125,7 @@ mydb> vacuum
 ### Show version
 ```
 mydb> version
-0.1.7
+0.1.8
 ```
 
 ## Yotta CLI

@@ -102,9 +102,8 @@
         var fnParams = args[1]; // array
         var db = new Yotta(dbName);
         db.open();
-        var test = function (value) {
-            return eval(fnParams[1]);
-        };
+        var test = null;
+        eval('test=' + fnParams[1]);
         db.rebuildValueIndex(fnParams[0], test);
         db.close();
     };

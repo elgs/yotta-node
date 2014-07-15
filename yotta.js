@@ -93,6 +93,7 @@
                 return err;
             }
         }
+        this._updateValueIndex(key, value);
     };
 
     Yotta.prototype.put = function (key, value, cb) {
@@ -168,6 +169,7 @@
                 self.keySyncBuffer.splice(i, 1);
             }
             fs.appendFileSync(self.indexFile, key + ',-1,-1\n');
+            this._updateValueIndex(key, null, true);
         } catch (err) {
             return err;
         }
@@ -392,15 +394,39 @@
         }
         this.valueIndex[indexPath] = {
             fn: test.toString(),
-            keys: vIndex
+            vIndex: vIndex
         };
         fs.writeFileSync(this.dbPath + '/' + indexPath + '.idx', JSON.stringify(this.valueIndex[indexPath]));
+    };
+
+    Yotta.prototype._updateValueIndex = function (key, value, remove) {
+        for (var indexPath in this.valueIndex) {
+            var valueIndex = this.valueIndex[indexPath];
+            var fn = valueIndex.fn;
+            var vIndex = valueIndex.vIndex;
+            if (remove) {
+
+                for (var indexValue in vIndex) {
+                    var keys = vIndex[indexValue];
+                    _.remove(keys, function (v) {
+                        return v === key;
+                    });
+                }
+            } else {
+                var f;
+                var fns = 'f=' + fn;
+                eval(fns);
+                var indexValue = f(value);
+                vIndex[indexValue] = vIndex[indexValue] || [];
+                vIndex[indexValue].push(key);
+            }
+        }
     };
 
     Yotta.prototype._findKeysFromValue = function (indexPath, test) {
         var ret = [];
         try {
-            var vIndex = this.valueIndex[indexPath].keys;
+            var vIndex = this.valueIndex[indexPath].vIndex;
             for (var value in vIndex) {
                 if (test(value)) {
                     var keys = vIndex[value];
@@ -435,7 +461,7 @@
     Yotta.prototype._findFromValue = function (indexPath, test) {
         var ret = {};
         try {
-            var vIndex = this.valueIndex[indexPath].keys;
+            var vIndex = this.valueIndex[indexPath].vIndex;
             for (var value in vIndex) {
                 if (test(value)) {
                     var keys = vIndex[value];

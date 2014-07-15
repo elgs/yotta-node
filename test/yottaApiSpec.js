@@ -158,14 +158,43 @@
             expect(idxExists).toBeTruthy();
         });
 
-        it('should let value index work synchronously.', function () {
+        it('should let value index and value index for key work synchronously.', function () {
             var ka = y0.findKeysFromValue('value', function (value) {
                 return value === 'va200';
             });
             expect(ka.length).toBe(1);
             expect(ka[0]).toBe('ka200');
 
+            y0.put('ka200x', 'va200');
+
+            ka = y0.findKeysFromValue('value', function (value) {
+                return value === 'va200';
+            });
+            expect(ka.length).toBe(2);
+            expect(ka[0]).toBe('ka200');
+            expect(ka[1]).toBe('ka200x');
+
+            y0.remove('ka200x');
+            ka = y0.findKeysFromValue('value', function (value) {
+                return value === 'va200';
+            });
+            expect(ka.length).toBe(1);
+            expect(ka[0]).toBe('ka200');
+
             var va = y0.findFromValue('value', function (value) {
+                return value === 'va400';
+            });
+            expect(va['ka400']).toBe('va400');
+
+            y0.put('ka400x', 'va400');
+            va = y0.findFromValue('value', function (value) {
+                return value === 'va400';
+            });
+            expect(va['ka400']).toBe('va400');
+            expect(va['ka400x']).toBe('va400');
+
+            y0.remove('ka400x');
+            va = y0.findFromValue('value', function (value) {
                 return value === 'va400';
             });
             expect(va['ka400']).toBe('va400');
