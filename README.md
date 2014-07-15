@@ -93,6 +93,7 @@ mydb> find true
 ```
 
 ### findkeysfromvalue
+```
 $ yotta
 > use a
 a> put a 1
@@ -104,8 +105,10 @@ a> findkeysfromvalue value "value==='3'"
 a> findkeysfromvalue value "value>=2"
 [ 'b', 'c' ]
 a>
+```
 
 ### findfromvalue
+```
 $ yotta
 > use a
 a> put a 1
@@ -115,7 +118,7 @@ a> put c 3
 a> findfromvalue value "value>=2"
 { b: '2', c: '3' }
 a>
-
+```
 
 ### Vacuum DB
 ```
