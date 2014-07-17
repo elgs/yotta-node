@@ -288,7 +288,7 @@ var statsInfo = yottadb.stats();
 console.log(statsInfo);
 // { holdSize: 630, dataFileSize: 672, holdRatio: 0.9375 }
 ```
-Now it looks to be a perfect chance do a vacuum.
+Now it looks to be a perfect chance to do a vacuum.
 ```javascript
 yottadb.vacuum(function(){
 	console.log(yottadb.stats());
