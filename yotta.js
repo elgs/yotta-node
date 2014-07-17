@@ -70,6 +70,18 @@
             this._syncFull();
             this._rebuildIndex(true);
         }
+
+        for (var indexPath in this.valueIndex) {
+            var valueIndex = this.valueIndex[indexPath];
+            var fn = valueIndex.fn;
+
+            var f;
+            var fns = 'f=' + fn;
+            eval(fns);
+            this.rebuildValueIndex(indexPath, f);
+        }
+
+
         fs.unlink(this.lockFile, function (err) {
             // don't care.
         });
