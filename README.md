@@ -128,7 +128,7 @@ mydb> vacuum
 ### Show version
 ```
 mydb> version
-0.1.8
+0.1.9
 ```
 
 ## Yotta CLI
@@ -188,7 +188,7 @@ $
 ### Show version
 ```
 $ yotta mydb version
-0.1.1
+0.1.9
 ```
 
 ## Module
