@@ -36,7 +36,7 @@
             throw new Error('Database is locked.');
         }
         if (this.closed === false) {
-            throw new Error('Database already opened.');
+            throw new Error('Database is already opened.');
         }
         this.dataBuffer = {};
         this.indexBuffer = {};
