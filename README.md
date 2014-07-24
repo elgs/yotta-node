@@ -354,6 +354,6 @@ the cache is too large.
 # Roadmap
 There are several things on my mind to do for Yotta DB:
 
-1. Implementation in other languages like Golang, Java and C;
+1. Implementation in other languages like Golang, Java and C, currently working on Golang binding;
 
 Patches and ideas welcome.
