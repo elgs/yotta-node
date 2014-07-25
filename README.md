@@ -348,8 +348,8 @@ yottadb.findFromValue(indexPath, test, cb)
 The motivation of creating the Yotta DB is that I was looking for something
 similar to Redis without installation as a heavy dependency. High performance
 is a concern in the design of Yotta DB. Most operations happen in a memory
-cache layer, and the cache is synchronized to the disk every second or when
-the cache is too large.
+cache layer, and the cache is synchronized to the disk every second if
+necessary or when the cache is too large.
 
 # Roadmap
 There are several things on my mind to do for Yotta DB:
