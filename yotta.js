@@ -29,6 +29,7 @@
         this.maxDataBufferSize = config.maxDataBufferSize || 1000000;
         this.purgeInterval = config.purgeInterval || 600;
         mkdirp.sync(this.dbPath);
+        Math.atan()
     };
 
     Yotta.prototype.open = function () {
@@ -200,8 +201,23 @@
         }
     };
 
+    //function (test, options, cb)
     //test(key, index, array of keys)
-    Yotta.prototype.findKeys = function (test, cb) {
+    Yotta.prototype.findKeys = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var test = args[0];
+        var options;
+        var cb;
+        if (args.length === 3) {
+            options = args[1];
+            cb = args[2];
+        } else if (args.length === 2) {
+            if (typeof args[1] === 'function') {
+                cb = args[1];
+            } else {
+                options = args[1];
+            }
+        }
         var self = this;
         if (typeof cb === 'function') {
             // async
@@ -222,8 +238,23 @@
         }
     };
 
+    //function (test, options, cb)
     //test(key, index, array of keys)
-    Yotta.prototype.find = function (test, cb) {
+    Yotta.prototype.find = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var test = args[0];
+        var options;
+        var cb;
+        if (args.length === 3) {
+            options = args[1];
+            cb = args[2];
+        } else if (args.length === 2) {
+            if (typeof args[1] === 'function') {
+                cb = args[1];
+            } else {
+                options = args[1];
+            }
+        }
         var self = this;
         if (typeof cb === 'function') {
             // async
@@ -435,7 +466,7 @@
         }
     };
 
-    Yotta.prototype._findKeysFromValue = function (indexPath, test) {
+    Yotta.prototype._findKeysFromValue = function (indexPath, options, test) {
         var ret = [];
         try {
             var vIndex = this.valueIndex[indexPath].vIndex;
@@ -451,13 +482,29 @@
         return ret;
     };
 
+    //function (indexPath, test, options, cb)
     // test(value), cb(err, ret)
-    Yotta.prototype.findKeysFromValue = function (indexPath, test, cb) {
+    Yotta.prototype.findKeysFromValue = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var indexPath = args[0];
+        var test = args[1];
+        var options;
+        var cb;
+        if (args.length === 4) {
+            options = args[2];
+            cb = args[3];
+        } else if (args.length === 3) {
+            if (typeof args[2] === 'function') {
+                cb = args[2];
+            } else {
+                options = args[2];
+            }
+        }
         var self = this;
         if (typeof cb === 'function') {
             // async
             setImmediate(function () {
-                var ret = self._findKeysFromValue(indexPath, test);
+                var ret = self._findKeysFromValue(indexPath, options, test);
                 if (ret instanceof Error) {
                     cb(ret, null);
                 } else {
@@ -466,11 +513,11 @@
             });
         } else {
             // sync
-            return this._findKeysFromValue(indexPath, test);
+            return this._findKeysFromValue(indexPath, options, test);
         }
     };
 
-    Yotta.prototype._findFromValue = function (indexPath, test) {
+    Yotta.prototype._findFromValue = function (indexPath, options, test) {
         var ret = {};
         try {
             var vIndex = this.valueIndex[indexPath].vIndex;
@@ -489,12 +536,28 @@
         return ret;
     };
 
+    //function (indexPath, test, options, cb)
     // test(value), cb(err, ret)
-    Yotta.prototype.findFromValue = function (indexPath, test, cb) {
+    Yotta.prototype.findFromValue = function () {
+        var args = Array.prototype.slice.call(arguments);
+        var indexPath = args[0];
+        var test = args[1];
+        var options;
+        var cb;
+        if (args.length === 4) {
+            options = args[2];
+            cb = args[3];
+        } else if (args.length === 3) {
+            if (typeof args[2] === 'function') {
+                cb = args[2];
+            } else {
+                options = args[2];
+            }
+        }
         var self = this;
         if (typeof cb === 'function') {
             // async
-            var ret = self._findFromValue(indexPath, test);
+            var ret = self._findFromValue(indexPath, options, test);
             if (ret instanceof Error) {
                 cb(ret, null);
             } else {
@@ -502,7 +565,7 @@
             }
         } else {
             // sync
-            return this._findFromValue(indexPath, test);
+            return this._findFromValue(indexPath, options, test);
         }
     };
 
