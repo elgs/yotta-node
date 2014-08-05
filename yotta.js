@@ -238,6 +238,12 @@
         }
     };
 
+    // options : {
+    //  sort : {
+    //      f1 : 'asc',
+    //      f2 : 'desc'
+    //  }
+    // }
     //function (test, options, cb)
     //test(key, index, array of keys)
     Yotta.prototype.find = function () {
