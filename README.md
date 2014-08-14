@@ -358,14 +358,6 @@ There are several things on my mind to do for Yotta DB:
 
 Patches and ideas welcome.
 
-# Donate
-<script src="https://www.paypalobjects.com/js/external/paypal-button.min.js?merchant=W9PZNYUTZWPZJ"
-    data-button="donate"
-    data-name="Donate to YottaDB"
-    data-amount="1.00"
-    async
-></script>
-
 #License
 ISC License (ISC)
 
